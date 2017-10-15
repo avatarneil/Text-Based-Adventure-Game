@@ -10,7 +10,7 @@ class StdObject():
         self.shortDesc = shortDesc
     
     def __str__(self):
-        return "A StdObject called '{0}'.".format(self.name)
+        return "A StdObject called '{0}'".format(self.name)
 
     def __repr__(self):
         return "Name: {0}\nlongDesc: {1}\nshortDesc: {2}"\
@@ -27,13 +27,16 @@ class Living(StdObject):
         self.inventory = Container("{0}'s Inventory".format(self.name))
     
     def __str__(self):
-        return "A Living named '{0}'.".format(self.name)
+        return "A {0} {1} (Living) named '{2}'".format(self.get_gender(), self.race, self.name)
 
     def __repr__(self):
         return "Name: {0}\nlongDesc: {1}\nshortDesc: {2}\ngender: {3}\nrace: {4}".format(
                     self.name, self.longDesc, self.shortDesc, self.gender, self.race)
     
-    def pronoun(self):
+    def get_gender(self):
+        return {'m':'male', 'f':'female', 'x':'nonbinary'}[self.gender]
+
+    def get_pronoun(self):
         return {'m':'he', 'f':'she', 'x':'they'}[self.gender]
 
     def give(self, item):
@@ -47,7 +50,7 @@ class Player(Living):
         super().__init__(name, longDesc, shortDesc, gender, race)
     
     def __str__(self):
-        return "A Player named '{0}'.".format(self.name)
+        return "A {0} {1} named {2}".format(self.get_gender(), self.race, self.name)
 
     def __repr__(self):
         return "Name: {0}\nlongDesc: {1}\nshortDesc: {2}\ngender: {3}\nrace: {4}".format(
@@ -60,7 +63,7 @@ class Item(StdObject):
         super().__init__(name, longDesc, shortDesc)
     
     def __str__(self):
-        return "An Item called '{0}'.".format(self.name)
+        return "A generic Item called '{0}'".format(self.name)
 
     def __repr__(self):
         return "Name: {0}\nlongDesc: {1}\nshortDesc: {2}"\
@@ -74,11 +77,15 @@ class Container(Item):
         self.inventory = []
     
     def __str__(self):
-        return "A Container called '{0}'.".format(self.name)
+        return "A Container called '{0}'".format(self.name)
 
     def __repr__(self):
         return "Name: {0}\nlongDesc: {1}\nshortDesc: {2}"\
             "\n".format(self.name, self.longDesc, self.shortDesc)
+    
+    def show_contents(self):
+        for i in self.inventory:
+            print(i)
 
     def add(self, item):
         self.inventory.append(item)
@@ -98,7 +105,8 @@ def test_suite():
     print(testContainer)
 
     print(repr(testPlayer))
-    print(testPlayer.pronoun())
     testPlayer.give(testItem)
+
+    testPlayer.inventory.show_contents()
 
 test_suite()
