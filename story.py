@@ -39,8 +39,11 @@ class Living(StdObject):
     def get_pronoun(self):
         return {'m':'he', 'f':'she', 'x':'they'}[self.gender]
 
-    def give(self, item):
-        self.inventory.add(item)
+    def give_item(self, item):
+        self.inventory.insert(item)
+    
+    def has_item(self, item) -> bool:
+        return self.inventory.has_item(item)
 
 
 class Player(Living):
@@ -84,12 +87,28 @@ class Container(Item):
             "\n".format(self.name, self.longDesc, self.shortDesc)
     
     def show_contents(self):
+        print("Contents of {0}:".format(self.name))
         for i in self.inventory:
             print(i)
 
-    def add(self, item):
+    def insert(self, item):
         self.inventory.append(item)
+    
+    def has_item(self, item) -> bool:
+        return item in self.inventory
 
+    def transfer_to(self, other, item):
+        if not self.has_item(item):
+            return
+        other.give_item(self.inventory.pop(item))
+
+
+class Location():
+
+    def __init__(self, name, desc):
+        self.name = name
+        self.desc = desc
+        
 
 def test_suite():
     testStdObject = StdObject("object", "a nonspecific generic object",  "a generic object")
@@ -105,7 +124,7 @@ def test_suite():
     print(testContainer)
 
     print(repr(testPlayer))
-    testPlayer.give(testItem)
+    testPlayer.give_item(testItem)
 
     testPlayer.inventory.show_contents()
 
