@@ -130,12 +130,12 @@ class Container(Item):
         other.give_item(self.inventory.pop(item))
 
 
-class Location():
+class Location(StdObject):
     """ Handles the contents of a certain game location. """
 
-    def __init__(self, name, desc):
-        self.name = name
-        self.desc = desc
+    def __init__(self, name, longDesc, shortDesc):
+        super().__init__(self, name, longDesc, shortDesc)
+        self.inventory = Container("{0} (Location)".format(self.name))
 
 class Exit(Item):
     """ Exits handle moving the Player from one Location to another. """
@@ -153,14 +153,20 @@ def test_suite():
     testItem = Item("item", "just a random item lying around", "an item")
     testContainer = Container("container", "a container for holding items", "a container")
 
-    print(testStdObject)
-    print(testLiving)
+    #print(testStdObject)
+    #print(testLiving)
     print(testPlayer)
     print(testItem)
     print(testContainer)
+    print("")
 
-    print(repr(testPlayer))
+    testPlayer.inventory.show_contents()
+    print("")
+
+    print(testPlayer.has_item(testItem))
     testPlayer.give_item(testItem)
+    print(testPlayer.has_item(testItem))
+    print("")
 
     testPlayer.inventory.show_contents()
 
