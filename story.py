@@ -10,7 +10,8 @@ class StdObject():
         self.shortDesc = shortDesc
 
     def __str__(self):
-        return "Name: {0}\nlongDesc: {1}\nshortDesc: {2}\n".format(self.name, self.longDesc, self.shortDesc)
+        return "Name: {0}\nlongDesc: {1}\nshortDesc: {2}"\
+            "\n".format(self.name, self.longDesc, self.shortDesc)
 
 
 class Living(StdObject):
@@ -23,16 +24,15 @@ class Living(StdObject):
         self.inventory = Container("{0}'s Inventory".format(self.name))
 
     def __str__(self):
-        return "Name: {0}\longDesc: {1}\shortDesc: {2}\n"\
-            "gender: {3}\race: {4}\n".format(
-                self.name, self.longDesc, self.shortDesc, self.gender, self.race)
+        return "Name: {0}\nlongDesc: {1}\nshortDesc: {2}\ngender: {3}\nrace: {4}\n".format(
+                    self.name, self.longDesc, self.shortDesc, self.gender, self.race)
 
 
 class Player(Living):
     
     def __init__(self, name, longDesc= "", shortDesc = "",
-                gender = "", race = ""):
-        super().init(name, longDesc, shortDesc, gender, race)
+                gender = "m", race = "human"):
+        super().__init__(name, longDesc, shortDesc, gender, race)
 
 
 class Item(StdObject):
@@ -51,7 +51,24 @@ class Container(Item):
         self.inventory = []
 
     def __str__(self):
-        return "Contasner"
+        return "Name: {0}\nlongDesc: {1}\nshortDesc: {2}"\
+            "\n".format(self.name, self.longDesc, self.shortDesc)
 
     def add(self, item):
         self.inventory.push(item)
+
+
+def test_suite():
+    testStdObject = StdObject("object", "a nonspecific generic object",  "a generic object")
+    testLiving = Living("living thing", "a living, breathing being", "a living thing")
+    testPlayer = Player("Zac", "the star of the show", "you")
+    testItem = Item("item", "just a random item lying around", "an item")
+    testContainer = Container("container", "a container for holding items", "a container")
+
+    print(testStdObject)
+    print(testLiving)
+    print(testPlayer)
+    print(testItem)
+    print(testContainer)
+
+test_suite()
