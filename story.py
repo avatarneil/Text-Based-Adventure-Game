@@ -8,8 +8,11 @@ class StdObject():
         self.name = name
         self.longDesc = longDesc
         self.shortDesc = shortDesc
-
+    
     def __str__(self):
+        return "A StdObject called '{0}'.".format(self.name)
+
+    def __repr__(self):
         return "Name: {0}\nlongDesc: {1}\nshortDesc: {2}"\
             "\n".format(self.name, self.longDesc, self.shortDesc)
 
@@ -22,9 +25,12 @@ class Living(StdObject):
         self.gender = gender
         self.race = race
         self.inventory = Container("{0}'s Inventory".format(self.name))
-
+    
     def __str__(self):
-        return "Name: {0}\nlongDesc: {1}\nshortDesc: {2}\ngender: {3}\nrace: {4}\n".format(
+        return "A Living named '{0}'.".format(self.name)
+
+    def __repr__(self):
+        return "Name: {0}\nlongDesc: {1}\nshortDesc: {2}\ngender: {3}\nrace: {4}".format(
                     self.name, self.longDesc, self.shortDesc, self.gender, self.race)
     
     def pronoun(self):
@@ -39,15 +45,26 @@ class Player(Living):
     def __init__(self, name, longDesc= "", shortDesc = "",
                 gender = "x", race = "human"):
         super().__init__(name, longDesc, shortDesc, gender, race)
+    
+    def __str__(self):
+        return "A Player named '{0}'.".format(self.name)
+
+    def __repr__(self):
+        return "Name: {0}\nlongDesc: {1}\nshortDesc: {2}\ngender: {3}\nrace: {4}".format(
+                    self.name, self.longDesc, self.shortDesc, self.gender, self.race)
 
 
 class Item(StdObject):
 
     def __init__(self, name, longDesc="", shortDesc=""):
         super().__init__(name, longDesc, shortDesc)
-
+    
     def __str__(self):
-        return super().__str__()
+        return "An Item called '{0}'.".format(self.name)
+
+    def __repr__(self):
+        return "Name: {0}\nlongDesc: {1}\nshortDesc: {2}"\
+            "\n".format(self.name, self.longDesc, self.shortDesc)
 
 
 class Container(Item):
@@ -55,8 +72,11 @@ class Container(Item):
     def __init__(self, name, longDesc="", shortDesc=""):
         super().__init__(name, longDesc, shortDesc)
         self.inventory = []
-
+    
     def __str__(self):
+        return "A Container called '{0}'.".format(self.name)
+
+    def __repr__(self):
         return "Name: {0}\nlongDesc: {1}\nshortDesc: {2}"\
             "\n".format(self.name, self.longDesc, self.shortDesc)
 
@@ -71,8 +91,14 @@ def test_suite():
     testItem = Item("item", "just a random item lying around", "an item")
     testContainer = Container("container", "a container for holding items", "a container")
 
+    print(testStdObject)
+    print(testLiving)
     print(testPlayer)
+    print(testItem)
+    print(testContainer)
+
+    print(repr(testPlayer))
     print(testPlayer.pronoun())
-    print(testPlayer.give(testItem))
+    testPlayer.give(testItem)
 
 test_suite()
