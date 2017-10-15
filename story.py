@@ -6,7 +6,7 @@ class StdObject():
     """ Base object from which all other objects derive from.
     Shoule never be used directly, only derived from. """
 
-    def __init__(self, name, longDesc = "", shortDesc = ""):
+    def __init__(self, name, longDesc="", shortDesc=""):
         self.name = name
         self.longDesc = longDesc
         self.shortDesc = shortDesc
@@ -23,8 +23,8 @@ class Living(StdObject):
     """ Base class for all living things.
     Should never be used directly, only derived from. """
 
-    def __init__(self, name, longDesc = "", shortDesc = "",
-                 gender = "x", race = "human"):
+    def __init__(self, name, longDesc="", shortDesc="",
+                 gender="x", race="human"):
         super().__init__(name, longDesc, shortDesc)
         self.gender = gender
         self.race = race
@@ -41,13 +41,13 @@ class Living(StdObject):
         """ Returns 'Male', 'Female', or an empty string
         depending on the Living's gender (m/f/x). """
 
-        return {'m':'male', 'f':'female', 'x':''}[self.gender]
+        return {'m': 'male', 'f': 'female', 'x': ''}[self.gender]
 
     def get_pronoun(self):
         """ Returns 'he', 'she', or 'they' depending
         on the Living's gender (m/f/x). """
 
-        return {'m':'he', 'f':'she', 'x':'they'}[self.gender]
+        return {'m': 'he', 'f': 'she', 'x': 'they'}[self.gender]
 
     def give_item(self, item):
         """ Inserts the given item into this Living's inventory. """
@@ -64,8 +64,8 @@ class Living(StdObject):
 class Player(Living):
     """ Controls the Player and handles interaction. """
 
-    def __init__(self, name, longDesc= "", shortDesc = "",
-                 gender = "x", race = "human"):
+    def __init__(self, name, longDesc="", shortDesc="",
+                 gender="x", race="human"):
         super().__init__(name, longDesc, shortDesc, gender, race)
 
     def __str__(self):
@@ -106,7 +106,7 @@ class Container(Item):
 
     def show_contents(self):
         """ Prints the name of the container followed by
-        it's contents, each in a new line. """
+        its contents, each in a new line. """
 
         print("Contents of {0}:".format(self.name))
         for item in self.inventory:
@@ -138,6 +138,7 @@ class Location(StdObject):
         super().__init__(self, name, longDesc, shortDesc)
         self.inventory = Container("{0} (Location)".format(self.name))
 
+
 class Exit(Item):
     """ Exits handle moving the Player from one Location to another. """
 
@@ -146,16 +147,18 @@ class Exit(Item):
         self.destination = None
 
 
-
 def test_suite():
-    testStdObject = StdObject("object", "a nonspecific generic object", "a generic object")
-    testLiving = Living("living thing", "a living, breathing being", "a living thing")
+    testStdObject = StdObject(
+        "object", "a nonspecific generic object", "a generic object")
+    testLiving = Living(
+        "living thing", "a living, breathing being", "a living thing")
     testPlayer = Player("Zac", "the star of the show", "you")
     testItem = Item("item", "just a random item lying around", "an item")
-    testContainer = Container("container", "a container for holding items", "a container")
+    testContainer = Container(
+        "container", "a container for holding items", "a container")
 
-    #print(testStdObject)
-    #print(testLiving)
+    # print(testStdObject)
+    # print(testLiving)
     print(testPlayer)
     print(testItem)
     print(testContainer)
@@ -170,6 +173,7 @@ def test_suite():
     print("")
 
     testPlayer.inventory.show_contents()
+
 
 test_suite()
 print(testStdObject)
