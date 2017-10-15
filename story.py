@@ -61,7 +61,7 @@ class Container(Item):
             "\n".format(self.name, self.longDesc, self.shortDesc)
 
     def add(self, item):
-        self.inventory.push(item)
+        self.inventory.append(item)
 
 
 def test_suite():
