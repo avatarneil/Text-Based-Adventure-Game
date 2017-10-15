@@ -3,6 +3,8 @@ import numpy
 
 
 class StdObject():
+    """ Base object from which all other objects derive from.
+    Shoule never be used directly, only derived from. """
 
     def __init__(self, name, longDesc="", shortDesc=""):
         self.name = name
@@ -18,6 +20,8 @@ class StdObject():
 
 
 class Living(StdObject):
+    """ Base class for all living things.
+    Should never be used directly, only derived from. """
 
     def __init__(self, name, longDesc = "", shortDesc = "",
                 gender = "x", race = "human"):
@@ -34,19 +38,31 @@ class Living(StdObject):
                     self.name, self.longDesc, self.shortDesc, self.gender, self.race)
     
     def get_gender(self):
-        return {'m':'male', 'f':'female', 'x':'nonbinary'}[self.gender]
+        """ Returns 'Male', 'Female', or an empty string
+        depending on the Living's gender (m/f/x). """
+
+        return {'m':'male', 'f':'female', 'x':''}[self.gender]
 
     def get_pronoun(self):
+        """ Returns 'he', 'she', or 'they' depending
+        on the Living's gender (m/f/x). """
+
         return {'m':'he', 'f':'she', 'x':'they'}[self.gender]
 
     def give_item(self, item):
+        """ Inserts the given item into this Living's inventory. """
+
         self.inventory.insert(item)
     
     def has_item(self, item) -> bool:
+        """ Returns whether or not the Living currently has
+        the specified item (true/false). """
+
         return self.inventory.has_item(item)
 
 
 class Player(Living):
+    """ Controls the Player and handles interaction. """
     
     def __init__(self, name, longDesc= "", shortDesc = "",
                 gender = "x", race = "human"):
@@ -61,6 +77,7 @@ class Player(Living):
 
 
 class Item(StdObject):
+    """ Generic base class for interactible items. """
 
     def __init__(self, name, longDesc="", shortDesc=""):
         super().__init__(name, longDesc, shortDesc)
@@ -74,6 +91,7 @@ class Item(StdObject):
 
 
 class Container(Item):
+    """ Game object that is used to store other objects. """
 
     def __init__(self, name, longDesc="", shortDesc=""):
         super().__init__(name, longDesc, shortDesc)
@@ -87,23 +105,33 @@ class Container(Item):
             "\n".format(self.name, self.longDesc, self.shortDesc)
     
     def show_contents(self):
+        """ Prints the name of the container followed by
+        it's contents, each in a new line. """
+
         print("Contents of {0}:".format(self.name))
-        for i in self.inventory:
-            print(i)
+        for item in self.inventory:
+            print(item)
 
     def insert(self, item):
+        """ Inserts the given item into the Container's inventory """
+
         self.inventory.append(item)
     
     def has_item(self, item) -> bool:
+        """ Returns whether or not the Container currently contains
+        the specified item. """
         return item in self.inventory
 
     def transfer_to(self, other, item):
+        """ Transfers an item from this Container's inventory to another's. """
+
         if not self.has_item(item):
             return
         other.give_item(self.inventory.pop(item))
 
 
 class Location():
+    """ Handles the contents of a certain game location. """
 
     def __init__(self, name, desc):
         self.name = name
