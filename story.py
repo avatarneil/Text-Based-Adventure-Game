@@ -17,7 +17,7 @@ class StdObject():
 class Living(StdObject):
 
     def __init__(self, name, longDesc = "", shortDesc = "",
-                gender = "m", race = "Human"):
+                gender = "x", race = "human"):
         super().__init__(name, longDesc, shortDesc)
         self.gender = gender
         self.race = race
@@ -26,12 +26,18 @@ class Living(StdObject):
     def __str__(self):
         return "Name: {0}\nlongDesc: {1}\nshortDesc: {2}\ngender: {3}\nrace: {4}\n".format(
                     self.name, self.longDesc, self.shortDesc, self.gender, self.race)
+    
+    def pronoun(self):
+        return {'m':'he', 'f':'she', 'x':'they'}[self.gender]
+
+    def give(self, item):
+        self.inventory.add(item)
 
 
 class Player(Living):
     
     def __init__(self, name, longDesc= "", shortDesc = "",
-                gender = "m", race = "human"):
+                gender = "x", race = "human"):
         super().__init__(name, longDesc, shortDesc, gender, race)
 
 
@@ -65,10 +71,8 @@ def test_suite():
     testItem = Item("item", "just a random item lying around", "an item")
     testContainer = Container("container", "a container for holding items", "a container")
 
-    print(testStdObject)
-    print(testLiving)
     print(testPlayer)
-    print(testItem)
-    print(testContainer)
+    print(testPlayer.pronoun())
+    print(testPlayer.give(testItem))
 
 test_suite()
