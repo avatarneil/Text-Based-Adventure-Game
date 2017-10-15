@@ -136,6 +136,14 @@ class Location():
     def __init__(self, name, desc):
         self.name = name
         self.desc = desc
+
+class Exit(Item):
+    """ Exits handle moving the Player from one Location to another. """
+
+    def __init__(self, name):
+        self.name = name
+        self.destination = None
+
         
 
 def test_suite():
