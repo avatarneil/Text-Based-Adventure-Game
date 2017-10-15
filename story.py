@@ -3,7 +3,6 @@ import numpy
 
 class StdObject():
 
-    def __init__(self, name,longDesc="", shortDesc=""):
     def __init__(self, name, longDesc="", shortDesc=""):
         self.name = name
         self.longDesc = longDesc
