@@ -3,19 +3,21 @@ import numpy
 
 
 class lang():
-    """ Language class that has methods for nice output. """
+    """ Language class that has methods for nice output """
 
     def a(thing):
         """ Returns 'an' if thing starts with a vowel,
         otherwise returns 'a'. """
 
-        if thing[0] in ['a', 'e', 'i', 'o', 'u']: return 'an'
-        else: return 'a'
-    
+        if thing[0] in ['a', 'e', 'i', 'o', 'u']:
+            return 'an'
+        else:
+            return 'a'
+
     def A(thing):
         """ Returns 'An' if thing starts with a vowel,
         otherwise returns 'A'. """
-        
+  
         return lang.a(thing).capitalize()
 
     def gender(living):
@@ -29,6 +31,7 @@ class lang():
         on the given Living's gender (m/f/x/n). """
 
         return {'m': 'he', 'f': 'she', 'x': 'they', 'n': 'it'}[living.gender]
+
 
 class StdObject():
     """ Base object from which all other objects derive from.
@@ -63,7 +66,7 @@ class Living(StdObject):
 
     def __repr__(self):
         return "Living\nName: {0}\nlongDesc: {1}\nshortDesc: {2}\ngender: {3}\nrace: {4}".format(
-               self.name, self.longDesc, self.shortDesc, self.gender, self.race)
+            self.name, self.longDesc, self.shortDesc, self.gender, self.race)
 
     def give_item(self, item):
         """ Inserts the given item into this Living's inventory. """
@@ -142,7 +145,8 @@ class Container(Item):
     def transfer_to(self, other, item):
         """ Transfers an item from this Container's inventory to another's. """
 
-        if not self.has_item(item): return
+        if not self.has_item(item):
+            return
         other.give_item(self.inventory.pop(item))
 
 
