@@ -4,7 +4,7 @@ import numpy
 
 class StdObject():
     """ Base object from which all other objects derive from.
-    Shoule never be used directly, only derived from. """
+    Should never be used directly. """
 
     def __init__(self, name, longDesc="", shortDesc=""):
         self.name = name
@@ -12,10 +12,10 @@ class StdObject():
         self.shortDesc = shortDesc
 
     def __str__(self):
-        return "A StdObject called '{0}'".format(self.name)
+        return "a StdObject called '{0}'".format(self.name)
 
     def __repr__(self):
-        return "Name: {0}\nlongDesc: {1}\nshortDesc: {2}"\
+        return "StdObject\nName: {0}\nlongDesc: {1}\nshortDesc: {2}"\
                "\n".format(self.name, self.longDesc, self.shortDesc)
 
 
@@ -31,10 +31,10 @@ class Living(StdObject):
         self.inventory = Container("{0}'s Inventory".format(self.name))
 
     def __str__(self):
-        return "A {0} {1} (Living) named '{2}'".format(self.get_gender(), self.race, self.name)
+        return "a {0} {1} Living named '{2}'".format(self.get_gender(), self.race, self.name)
 
     def __repr__(self):
-        return "Name: {0}\nlongDesc: {1}\nshortDesc: {2}\ngender: {3}\nrace: {4}".format(
+        return "Living\nName: {0}\nlongDesc: {1}\nshortDesc: {2}\ngender: {3}\nrace: {4}".format(
                self.name, self.longDesc, self.shortDesc, self.gender, self.race)
 
     def get_gender(self):
@@ -69,10 +69,10 @@ class Player(Living):
         super().__init__(name, longDesc, shortDesc, gender, race)
 
     def __str__(self):
-        return "A {0} {1} named {2}".format(self.get_gender(), self.race, self.name)
+        return "a {0} {1} Player named '{2}'".format(self.get_gender(), self.race, self.name)
 
     def __repr__(self):
-        return "Name: {0}\nlongDesc: {1}\nshortDesc: {2}\ngender: {3}\nrace: {4}".format(
+        return "Player\nName: {0}\nlongDesc: {1}\nshortDesc: {2}\ngender: {3}\nrace: {4}".format(
             self.name, self.longDesc, self.shortDesc, self.gender, self.race)
 
 
@@ -83,10 +83,10 @@ class Item(StdObject):
         super().__init__(name, longDesc, shortDesc)
 
     def __str__(self):
-        return "A generic Item called '{0}'".format(self.name)
+        return "an Item called '{0}'".format(self.name)
 
     def __repr__(self):
-        return "Name: {0}\nlongDesc: {1}\nshortDesc: {2}"\
+        return "Item\nName: {0}\nlongDesc: {1}\nshortDesc: {2}"\
             "\n".format(self.name, self.longDesc, self.shortDesc)
 
 
@@ -98,10 +98,10 @@ class Container(Item):
         self.inventory = []
 
     def __str__(self):
-        return "A Container called '{0}'".format(self.name)
+        return "a Container called '{0}'".format(self.name)
 
     def __repr__(self):
-        return "Name: {0}\nlongDesc: {1}\nshortDesc: {2}"\
+        return "Container\nName: {0}\nlongDesc: {1}\nshortDesc: {2}"\
                "\n".format(self.name, self.longDesc, self.shortDesc)
 
     def show_contents(self):
@@ -126,8 +126,7 @@ class Container(Item):
     def transfer_to(self, other, item):
         """ Transfers an item from this Container's inventory to another's. """
 
-        if not self.has_item(item):
-            return
+        if not self.has_item(item): return
         other.give_item(self.inventory.pop(item))
 
 
@@ -136,11 +135,11 @@ class Location(StdObject):
 
     def __init__(self, name, longDesc, shortDesc):
         super().__init__(self, name, longDesc, shortDesc)
-        self.inventory = Container("{0} (Location)".format(self.name))
+        self.inventory = Container("Contents of Location '{0}'".format(self.name))
 
 
 class Exit(Item):
-    """ Exits handle moving the Player from one Location to another. """
+    """ Handles moving the Player from one Location to another. """
 
     def __init__(self, name, longDesc, shortDesc):
         super().__init__(self, name, longDesc, shortDesc)
@@ -148,17 +147,24 @@ class Exit(Item):
 
 
 def test_suite():
-    testStdObject = StdObject(
-        "object", "a nonspecific generic object", "a generic object")
-    testLiving = Living(
-        "living thing", "a living, breathing being", "a living thing")
-    testPlayer = Player("Zac", "the star of the show", "you")
-    testItem = Item("item", "just a random item lying around", "an item")
-    testContainer = Container(
-        "container", "a container for holding items", "a container")
+    testStdObject = StdObject("test standard object",
+        "a generic, standard object with no special properties",
+        "a generic object")
+    testLiving = Living("test living",
+        "a living, breathing being",
+        "a living thing")
+    testPlayer = Player("test player",
+        "the star of the show",
+        "you", "m", "human")
+    testItem = Item("test item",
+        "a generic item used for testing purposes",
+        "an item")
+    testContainer = Container("test container",
+        "a container for holding items",
+        "a container")
 
-    # print(testStdObject)
-    # print(testLiving)
+    print(testStdObject)
+    print(testLiving)
     print(testPlayer)
     print(testItem)
     print(testContainer)
@@ -176,4 +182,3 @@ def test_suite():
 
 
 test_suite()
-print(testStdObject)
