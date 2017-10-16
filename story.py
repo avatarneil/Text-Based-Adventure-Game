@@ -98,8 +98,9 @@ class Player(Living):
 class Item(StdObject):
     """ Generic base class for interactible items. """
 
-    def __init__(self, name, longDesc="", shortDesc=""):
+    def __init__(self, name, longDesc="", shortDesc="", value=0):
         super().__init__(name, longDesc, shortDesc)
+        value = value
 
     def __str__(self):
         return "an Item called '{0}'".format(self.name)
