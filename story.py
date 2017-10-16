@@ -2,6 +2,34 @@ import sys
 import numpy
 
 
+class lang():
+    """ Language class that has methods for nice output. """
+
+    def a(thing):
+        """ Returns 'an' if thing starts with a vowel,
+        otherwise returns 'a'. """
+
+        if thing[0] in ['a', 'e', 'i', 'o', 'u']: return 'an'
+        else: return 'a'
+    
+    def A(thing):
+        """ Returns 'An' if thing starts with a vowel,
+        otherwise returns 'A'. """
+        
+        return lang.a(thing).capitalize()
+
+    def gender(living):
+        """ Returns 'Male', 'Female', or an empty string
+        depending on the given Living's gender (m/f/x/n). """
+
+        return {'m': 'male', 'f': 'female', 'x': '', 'n': ''}[living.gender]
+
+    def pronoun(living):
+        """ Returns 'he', 'she', 'they', or 'it' depending
+        on the given Living's gender (m/f/x/n). """
+
+        return {'m': 'he', 'f': 'she', 'x': 'they', 'n': 'it'}[living.gender]
+
 class StdObject():
     """ Base object from which all other objects derive from.
     Should never be used directly. """
@@ -31,23 +59,11 @@ class Living(StdObject):
         self.inventory = Container("{0}'s Inventory".format(self.name))
 
     def __str__(self):
-        return "a {0} {1} Living named '{2}'".format(self.get_gender(), self.race, self.name)
+        return "a {0} {1} Living named '{2}'".format(lang.gender(self), self.race, self.name)
 
     def __repr__(self):
         return "Living\nName: {0}\nlongDesc: {1}\nshortDesc: {2}\ngender: {3}\nrace: {4}".format(
                self.name, self.longDesc, self.shortDesc, self.gender, self.race)
-
-    def get_gender(self):
-        """ Returns 'Male', 'Female', or an empty string
-        depending on the Living's gender (m/f/x). """
-
-        return {'m': 'male', 'f': 'female', 'x': ''}[self.gender]
-
-    def get_pronoun(self):
-        """ Returns 'he', 'she', or 'they' depending
-        on the Living's gender (m/f/x). """
-
-        return {'m': 'he', 'f': 'she', 'x': 'they'}[self.gender]
 
     def give_item(self, item):
         """ Inserts the given item into this Living's inventory. """
@@ -69,7 +85,7 @@ class Player(Living):
         super().__init__(name, longDesc, shortDesc, gender, race)
 
     def __str__(self):
-        return "a {0} {1} Player named '{2}'".format(self.get_gender(), self.race, self.name)
+        return "a {0} {1} Player named '{2}'".format(lang.gender(self), self.race, self.name)
 
     def __repr__(self):
         return "Player\nName: {0}\nlongDesc: {1}\nshortDesc: {2}\ngender: {3}\nrace: {4}".format(
@@ -179,6 +195,13 @@ def test_suite():
     print("")
 
     testPlayer.inventory.show_contents()
+    print("")
 
+    print(lang.gender(testPlayer))
+    print(lang.pronoun(testPlayer))
+    print(lang.a("test"))
+    print(lang.a("example"))
+    print(lang.A("test"))
+    print(lang.A("example"))
 
 test_suite()
