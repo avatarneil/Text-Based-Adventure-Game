@@ -7,6 +7,9 @@ player-driven text-based experiences.
 import sys
 import numpy
 
+#pylint: disable=too-many-arguments
+#pylint: disable=too-few-public-methods
+#pylint: good-names=i,j,k,x,y,a,A
 
 class Lang():
     """ Language class that has methods for nice output. """
@@ -43,14 +46,14 @@ class Lang():
     def inputParser(cls, inputData):
         """ Takes inputs and parses into a more convenient datatype """
 
-        if type(inputData) == str:  # if inputData is a string case
+        if type(inputData) is str:  # if inputData is a string case
             firstWord = inputData.partition(' ')[0]
         else:
             try:
                 inputData = str(inputData)
                 firstWord = inputData.partition(' ')[0]
             except AttributeError:
-                return "Input is not parsable as a string"
+                return "inputData is not parsable as a string"
 
 
 class StdObject():
@@ -61,6 +64,7 @@ class StdObject():
         self.name = name
         self.longDesc = longDesc
         self.shortDesc = shortDesc
+        self.actions = {}
 
     def __str__(self):
         return "a StdObject called '{0}'".format(self.name)
@@ -68,6 +72,9 @@ class StdObject():
     def __repr__(self):
         return "StdObject\nName: {0}\nlongDesc: {1}\nshortDesc: {2}"\
                "\n".format(self.name, self.longDesc, self.shortDesc)
+    
+    def attach_action(self, name, action):
+        self.action[name] = action
 
 
 class Living(StdObject):
@@ -93,9 +100,9 @@ class Living(StdObject):
 
         self.inventory.insert(item)
 
-    def has_item(self, item) -> bool:
-        """ Returns whether or not the Living currently has
-        the specified item (true/false). """
+    def has_item(self, item):
+        """ Returns whether or not this Living currently has
+        the specified item (True/False). """
 
         return self.inventory.has_item(item)
 
@@ -186,3 +193,15 @@ class Exit(Item):
     def __init__(self, name, longDesc, shortDesc):
         super().__init__(self, name, longDesc, shortDesc)
         self.destination = None
+
+class Action(): #lawsuit
+    """ Verbs are attached to StdObjects using StdObject.attach_action().
+    Once an action has been atatched to a StdObject, any other StdObject
+    can perform z action on that StdObject. """
+
+    def __init__(self, name):
+        self.base = base # write
+        self.present_tense = present_tense # writes
+        self.present_participle = present_participle # writing
+        self.past_tense = past_tense # wrote
+        self.past_participle = past_participle # written
