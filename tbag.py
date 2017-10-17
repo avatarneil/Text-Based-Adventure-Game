@@ -53,7 +53,24 @@ class Lang():
                 firstWord = inputData.partition(' ')[0]
             except AttributeError:
                 return "inputData is not parsable as a string"
+    
+    @classmethod
+    def prettyPrint(cls, phrase):
+        """ Nicely formats and prints a given phrase. """
 
+        if not type(phrase) is str:
+            try:
+                phrase = str(phrase)
+            except AttributeError:
+                return "phrase is not parsable as a string"
+
+        split = phrase.split(' ')
+
+        for i,word in enumerate(split):
+            if i == 0 or split[i-1] == '.': # if it's the first word in a
+                split[i] = word.capitalize() # sentence, capitalize it
+        
+        print(' '.join(split))
 
 class StdObject():
     """ Base object from which all other objects derive from.
@@ -85,7 +102,7 @@ class Living(StdObject):
         super().__init__(name, longDesc, shortDesc)
         self.gender = gender
         self.race = race
-        self.inventory = Container("{0}'s Inventory".format(self.name))
+        self.inventory = Container("{0}'s inventory".format(self.name))
 
     def __str__(self):
         return "a {0} {1} Living named '{2}'".format(Lang.gender(self), self.race, self.name)
@@ -154,9 +171,13 @@ class Container(Item):
         """ Prints the name of the container followed by
         its contents, each in a new line. """
 
+        if not self.inventory:
+            Lang.prettyPrint("{0} is empty.".format(self.name))
+            return
+        
         print("Contents of {0}:".format(self.name))
         for item in self.inventory:
-            print(item)
+            Lang.prettyPrint(item)
 
     def insert(self, item):
         """ Inserts the given item into the Container's inventory """

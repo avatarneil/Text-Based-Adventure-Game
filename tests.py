@@ -42,8 +42,8 @@ def test_suite():
     print(tbag.Lang.pronoun(testPlayer))
     print(tbag.Lang.a("test"))
     print(tbag.Lang.a("example"))
-    print(tbag.Lang.A("test"))
-    print(tbag.Lang.A("example"))
+    print(tbag.Lang.A("banana"))
+    print(tbag.Lang.A("apple"))
 
 
 test_suite()
