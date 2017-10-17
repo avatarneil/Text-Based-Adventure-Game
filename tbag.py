@@ -9,7 +9,6 @@ import numpy
 
 #pylint: disable=too-many-arguments
 #pylint: disable=too-few-public-methods
-#pylint: good-names=i,j,k,x,y,a,A
 
 class Lang():
     """ Language class that has methods for nice output. """
@@ -72,9 +71,9 @@ class StdObject():
     def __repr__(self):
         return "StdObject\nName: {0}\nlongDesc: {1}\nshortDesc: {2}"\
                "\n".format(self.name, self.longDesc, self.shortDesc)
-    
+
     def attach_action(self, name, action):
-        self.action[name] = action
+        self.actions[name] = action
 
 
 class Living(StdObject):
@@ -199,13 +198,16 @@ class Action(): #lawsuit
     Once an action has been atatched to a StdObject, any living can perform
     that action using Living.do_action() """
 
-    def __init__(self, base, tell=None, synonyms=[]):
+    def __init__(self, base, tell=None, synonyms=None):
         self.base = base # eg. write, open, go
         if not tell: # eg. writes, opens, goes
             self.tell = base + 's'
         else:
-            self.tell = present_tense
-        self.synonyms = synonymsg
-    
+            self.tell = tell
+        if not synonyms:
+            self.synonyms = []
+        else:
+            self.synonyms = synonyms
+
     def do_action(self):
         pass
