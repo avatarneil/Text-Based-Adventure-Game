@@ -23,7 +23,7 @@ class lang():
     def A(thing):
         """ Returns 'An' if thing starts with a vowel,
         otherwise returns 'A'. """
-  
+
         return lang.a(thing).capitalize()
 
     def gender(living):
@@ -37,6 +37,18 @@ class lang():
         on the given Living's gender (m/f/x/n). """
 
         return {'m': 'he', 'f': 'she', 'x': 'they', 'n': 'it'}[living.gender]
+
+    def inputParser(inputData):
+        """ Takes inputs and parses into a more convenient datatype """
+
+        if (type(inputData) == str):  # if inputData is a string case
+            firstWord = "inputData.partition(' ')[0]"
+        else:
+            try:
+                inputData = str(inputData)
+                firstWord = "inputData.partition(' ')[0]"
+            except:
+                return("Input is not parsable as a string")
 
 
 class StdObject():
@@ -162,7 +174,8 @@ class Location(StdObject):
 
     def __init__(self, name, longDesc, shortDesc):
         super().__init__(self, name, longDesc, shortDesc)
-        self.inventory = Container("Contents of Location '{0}'".format(self.name))
+        self.inventory = Container(
+            "Contents of Location '{0}'".format(self.name))
 
 
 class Exit(Item):
@@ -175,20 +188,20 @@ class Exit(Item):
 
 def test_suite():
     testStdObject = StdObject("test standard object",
-        "a generic, standard object with no special properties",
-        "a generic object")
+                              "a generic, standard object with no special properties",
+                              "a generic object")
     testLiving = Living("test living",
-        "a living, breathing being",
-        "a living thing")
+                        "a living, breathing being",
+                        "a living thing")
     testPlayer = Player("test player",
-        "the star of the show",
-        "you", "m", "human")
+                        "the star of the show",
+                        "you", "m", "human")
     testItem = Item("test item",
-        "a generic item used for testing purposes",
-        "an item")
+                    "a generic item used for testing purposes",
+                    "an item")
     testContainer = Container("test container",
-        "a container for holding items",
-        "a container")
+                              "a container for holding items",
+                              "a container")
 
     print(testStdObject)
     print(testLiving)
@@ -214,5 +227,6 @@ def test_suite():
     print(lang.a("example"))
     print(lang.A("test"))
     print(lang.A("example"))
+
 
 test_suite()
