@@ -42,11 +42,11 @@ class lang():
         """ Takes inputs and parses into a more convenient datatype """
 
         if (type(inputData) == str):  # if inputData is a string case
-            firstWord = "inputData.partition(' ')[0]"
+            firstWord = inputData.partition(' ')[0]
         else:
             try:
                 inputData = str(inputData)
-                firstWord = "inputData.partition(' ')[0]"
+                firstWord = nputData.partition(' ')[0]
             except AttributeError:
                 return("Input is not parsable as a string")
 
