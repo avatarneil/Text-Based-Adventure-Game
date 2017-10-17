@@ -8,7 +8,7 @@ import sys
 import numpy
 
 
-class lang():
+class Lang():
     """ Language class that has methods for nice output """
 
     def a(self, thing):
@@ -221,12 +221,12 @@ def test_suite():
     testPlayer.inventory.show_contents()
     print("")
 
-    print(lang.gender(testPlayer))
-    print(lang.pronoun(testPlayer))
-    print(lang.a("test"))
-    print(lang.a("example"))
-    print(lang.A("test"))
-    print(lang.A("example"))
+    print(Lang.gender(testPlayer))
+    print(Lang.pronoun(testPlayer))
+    print(Lang.a("test"))
+    print(Lang.a("example"))
+    print(Lang.A("test"))
+    print(Lang.A("example"))
 
 
 test_suite()
