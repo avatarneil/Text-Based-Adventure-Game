@@ -11,7 +11,7 @@ import numpy
 class lang():
     """ Language class that has methods for nice output """
 
-    def a(thing):
+    def a(self, thing):
         """ Returns 'an' if thing starts with a vowel,
         otherwise returns 'a'. """
 
@@ -20,25 +20,25 @@ class lang():
         else:
             return 'a'
 
-    def A(thing):
+    def A(self, thing):
         """ Returns 'An' if thing starts with a vowel,
         otherwise returns 'A'. """
 
         return lang.a(thing).capitalize()
 
-    def gender(living):
+    def gender(self, living):
         """ Returns 'Male', 'Female', or an empty string
         depending on the given Living's gender (m/f/x/n). """
 
         return {'m': 'male', 'f': 'female', 'x': '', 'n': ''}[living.gender]
 
-    def pronoun(living):
+    def pronoun(self, living):
         """ Returns 'he', 'she', 'they', or 'it' depending
         on the given Living's gender (m/f/x/n). """
 
         return {'m': 'he', 'f': 'she', 'x': 'they', 'n': 'it'}[living.gender]
 
-    def inputParser(inputData):
+    def inputParser(self, inputData):
         """ Takes inputs and parses into a more convenient datatype """
 
         if (type(inputData) == str):  # if inputData is a string case
@@ -46,7 +46,7 @@ class lang():
         else:
             try:
                 inputData = str(inputData)
-                firstWord = nputData.partition(' ')[0]
+                firstWord = inputData.partition(' ')[0]
             except AttributeError:
                 return("Input is not parsable as a string")
 
