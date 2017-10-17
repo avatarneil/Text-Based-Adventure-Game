@@ -9,46 +9,48 @@ import numpy
 
 
 class Lang():
-    """ Language class that has methods for nice output """
+    """ Language class that has methods for nice output. """
 
-    def a(self, thing):
+    @classmethod
+    def a(cls, thing):
         """ Returns 'an' if thing starts with a vowel,
         otherwise returns 'a'. """
 
-        if thing[0] in ['a', 'e', 'i', 'o', 'u']:
-            return 'an'
-        else:
-            return 'a'
+        return 'an' if thing[0] in ['a', 'e', 'i', 'o', 'u'] else 'a'
 
-    def A(self, thing):
+    @classmethod
+    def A(cls, thing):
         """ Returns 'An' if thing starts with a vowel,
         otherwise returns 'A'. """
 
         return self.a(thing).capitalize()
 
-    def gender(self, living):
+    @classmethod
+    def gender(cls, living):
         """ Returns 'Male', 'Female', or an empty string
         depending on the given Living's gender (m/f/x/n). """
 
         return {'m': 'male', 'f': 'female', 'x': '', 'n': ''}[living.gender]
 
-    def pronoun(self, living):
+    @classmethod
+    def pronoun(cls, living):
         """ Returns 'he', 'she', 'they', or 'it' depending
         on the given Living's gender (m/f/x/n). """
 
         return {'m': 'he', 'f': 'she', 'x': 'they', 'n': 'it'}[living.gender]
 
-    def inputParser(self, inputData):
+    @classmethod
+    def inputParser(cls, inputData):
         """ Takes inputs and parses into a more convenient datatype """
 
-        if (type(inputData) == str):  # if inputData is a string case
+        if type(inputData) == str:  # if inputData is a string case
             firstWord = inputData.partition(' ')[0]
         else:
             try:
                 inputData = str(inputData)
                 firstWord = inputData.partition(' ')[0]
             except AttributeError:
-                return("Input is not parsable as a string")
+                return "Input is not parsable as a string"
 
 
 class StdObject():
@@ -80,7 +82,7 @@ class Living(StdObject):
         self.inventory = Container("{0}'s Inventory".format(self.name))
 
     def __str__(self):
-        return "a {0} {1} Living named '{2}'".format(lang.gender(self), self.race, self.name)
+        return "a {0} {1} Living named '{2}'".format(Lang.gender(self), self.race, self.name)
 
     def __repr__(self):
         return "Living\nName: {0}\nlongDesc: {1}\nshortDesc: {2}\ngender: {3}\nrace: {4}".format(
@@ -106,7 +108,7 @@ class Player(Living):
         super().__init__(name, longDesc, shortDesc, gender, race)
 
     def __str__(self):
-        return "a {0} {1} Player named '{2}'".format(lang.gender(self), self.race, self.name)
+        return "a {0} {1} Player named '{2}'".format(Lang.gender(self), self.race, self.name)
 
     def __repr__(self):
         return "Player\nName: {0}\nlongDesc: {1}\nshortDesc: {2}\ngender: {3}\nrace: {4}".format(
