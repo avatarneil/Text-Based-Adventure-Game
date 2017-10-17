@@ -195,13 +195,17 @@ class Exit(Item):
         self.destination = None
 
 class Action(): #lawsuit
-    """ Verbs are attached to StdObjects using StdObject.attach_action().
-    Once an action has been atatched to a StdObject, any other StdObject
-    can perform z action on that StdObject. """
+    """ Actions are attached to StdObjects using StdObject.attach_action().
+    Once an action has been atatched to a StdObject, any living can perform
+    that action using Living.do_action() """
 
-    def __init__(self, name):
-        self.base = base # write
-        self.present_tense = present_tense # writes
-        self.present_participle = present_participle # writing
-        self.past_tense = past_tense # wrote
-        self.past_participle = past_participle # written
+    def __init__(self, base, tell=None, synonyms=[]):
+        self.base = base # eg. write, open, go
+        if not tell: # eg. writes, opens, goes
+            self.tell = base + 's'
+        else:
+            self.tell = present_tense
+        self.synonyms = synonymsg
+    
+    def do_action(self):
+        pass
