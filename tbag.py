@@ -24,7 +24,7 @@ class lang():
         """ Returns 'An' if thing starts with a vowel,
         otherwise returns 'A'. """
 
-        return lang.a(thing).capitalize()
+        return self.a(thing).capitalize()
 
     def gender(self, living):
         """ Returns 'Male', 'Female', or an empty string
