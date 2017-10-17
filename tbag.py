@@ -14,28 +14,28 @@ class Lang():
     """ Language class that has methods for nice output. """
 
     @classmethod
-    def a(cls, thing):
+    def a(cls, thing) -> str:
         """ Returns 'an' if thing starts with a vowel,
         otherwise returns 'a'. """
 
         return 'an ' + thing if thing[0] in ['a', 'e', 'i', 'o', 'u'] else 'a ' + thing
 
     @classmethod
-    def A(cls, thing):
+    def A(cls, thing) -> str:
         """ Returns 'An' if thing starts with a vowel,
         otherwise returns 'A'. """
 
         return Lang.a(thing).capitalize()
 
     @classmethod
-    def gender(cls, living):
+    def gender(cls, living) -> str:
         """ Returns 'Male', 'Female', or an empty string
         depending on the given Living's gender (m/f/x/n). """
 
         return {'m': 'male', 'f': 'female', 'x': '', 'n': ''}[living.gender]
 
     @classmethod
-    def pronoun(cls, living):
+    def pronoun(cls, living) -> str:
         """ Returns 'he', 'she', 'they', or 'it' depending
         on the given Living's gender (m/f/x/n). """
 
@@ -53,12 +53,13 @@ class Lang():
                 firstWord = inputData.partition(' ')[0]
             except AttributeError:
                 return "inputData is not parsable as a string"
-    
-    @classmethod
-    def prettyPrint(cls, phrase):
-        """ Nicely formats and prints a given phrase. """
 
-        if not type(phrase) is str:
+    @classmethod
+    def prettyPrint(cls, phrase) -> str:
+        """ Nicely formats and prints a given phrase. 
+        Currently just fixes capitalization. """
+
+        if type(phrase) is not str:
             try:
                 phrase = str(phrase)
             except AttributeError:
@@ -66,10 +67,10 @@ class Lang():
 
         split = phrase.split(' ')
 
-        for i,word in enumerate(split):
+        for i, word in enumerate(split):
             if i == 0 or split[i-1] == '.': # if it's the first word in a
                 split[i] = word.capitalize() # sentence, capitalize it
-        
+
         print(' '.join(split))
 
 class StdObject():
@@ -116,7 +117,7 @@ class Living(StdObject):
 
         self.inventory.insert(item)
 
-    def has_item(self, item):
+    def has_item(self, item) -> bool:
         """ Returns whether or not this Living currently has
         the specified item (True/False). """
 
@@ -174,7 +175,7 @@ class Container(Item):
         if not self.inventory:
             Lang.prettyPrint("{0} is empty.".format(self.name))
             return
-        
+
         print("Contents of {0}:".format(self.name))
         for item in self.inventory:
             Lang.prettyPrint(item)
@@ -190,12 +191,18 @@ class Container(Item):
 
         return item in self.inventory
 
-    def transfer_to(self, other, item):
-        """ Transfers an item from this Container's inventory to another's. """
+    def transfer_to(self, other, item) -> bool:
+        """ Transfers an item from this Container's inventory to another's. 
+        Returns True if successful, False if not. """
 
         if not self.has_item(item):
-            return
-        other.give_item(self.inventory.pop(item))
+            return False
+
+        try:
+            other.give_item(self.inventory.pop(self.inventory.index(item)))
+            return True
+        except ValueError:
+            return False
 
 
 class Location(StdObject):
@@ -218,6 +225,8 @@ class Action(): #lawsuit
     """ Actions are attached to StdObjects using StdObject.attach_action().
     Once an action has been atatched to a StdObject, any living can perform
     that action using Living.do_action() """
+    # TODO: StdObject.attach_action()
+    # TODO: Living.do_action()
 
     def __init__(self, base, tell=None, synonyms=None):
         self.base = base # eg. write, open, go
@@ -229,6 +238,3 @@ class Action(): #lawsuit
             self.synonyms = []
         else:
             self.synonyms = synonyms
-
-    def do_action(self):
-        pass
