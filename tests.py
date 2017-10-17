@@ -1,9 +1,5 @@
 import tbag
 
-#pylint: disable-msg=invalid-variable-name
-#pylint: disable-msg=invalid-attribute-name
-#pylint: disable-msg=invalid-method-name
-
 def test_suite():
     testStdObject = tbag.StdObject("test standard object",
                                    "a generic, standard object with no special properties",
@@ -21,29 +17,26 @@ def test_suite():
                                    "a container for holding items",
                                    "a container")
 
-    print(testStdObject)
-    print(testLiving)
-    print(testPlayer)
-    print(testItem)
-    print(testContainer)
-    print("")
+    print("{0}\n{1}\n{2}\n{3}\n{4}\n".format(
+        testStdObject, testLiving, testPlayer, testItem, testContainer
+    ))
 
     testPlayer.inventory.show_contents()
-    print("TestPlayer has TestItem: {0}".format(testPlayer.has_item(testItem)))
-    print("")
+    print("TestPlayer has TestItem: {0}\n".format(testPlayer.has_item(testItem)))
 
     testPlayer.give_item(testItem)
 
     testPlayer.inventory.show_contents()
-    print("TestPlayer has TestItem: {0}".format(testPlayer.has_item(testItem)))
-    print("")
+    print("TestPlayer has TestItem: {0}\n".format(testPlayer.has_item(testItem)))
 
     print(tbag.Lang.gender(testPlayer))
     print(tbag.Lang.pronoun(testPlayer))
-    print(tbag.Lang.a("test"))
-    print(tbag.Lang.a("example"))
-    print(tbag.Lang.A("banana"))
-    print(tbag.Lang.A("apple"))
 
+    print("{0}, {1}\n{2}, {3}\n".format(
+        tbag.Lang.a("test"), tbag.Lang.a("example"),
+        tbag.Lang.A("banana"), tbag.Lang.A("apple")
+    ))
+
+    tbag.Lang.prettyPrint("these violent delights have violent ends")
 
 test_suite()

@@ -56,14 +56,16 @@ class Lang():
 
     @classmethod
     def prettyPrint(cls, phrase) -> str:
-        """ Nicely formats and prints a given phrase. 
-        Currently just fixes capitalization. """
+        """ Nicely formats and prints a given phrase. """
 
         if type(phrase) is not str:
             try:
                 phrase = str(phrase)
             except AttributeError:
                 return "phrase is not parsable as a string"
+
+        if phrase[len(phrase)-1].isalnum():
+            phrase = phrase + '.'
 
         split = phrase.split(' ')
 
