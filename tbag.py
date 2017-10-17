@@ -16,14 +16,14 @@ class Lang():
         """ Returns 'an' if thing starts with a vowel,
         otherwise returns 'a'. """
 
-        return 'an' if thing[0] in ['a', 'e', 'i', 'o', 'u'] else 'a'
+        return 'an ' + thing if thing[0] in ['a', 'e', 'i', 'o', 'u'] else 'a ' + thing
 
     @classmethod
     def A(cls, thing):
         """ Returns 'An' if thing starts with a vowel,
         otherwise returns 'A'. """
 
-        return self.a(thing).capitalize()
+        return Lang.a(thing).capitalize()
 
     @classmethod
     def gender(cls, living):
