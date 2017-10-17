@@ -47,7 +47,7 @@ class lang():
             try:
                 inputData = str(inputData)
                 firstWord = "inputData.partition(' ')[0]"
-            except:
+            except AttributeError:
                 return("Input is not parsable as a string")
 
 
