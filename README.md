@@ -1,4 +1,4 @@
-# Text-Adventure-NZ
+# Text-Based-Adventure-Game (TBAG)
 
 A lightweight, customizable module designed to make building a text-adventure
 game in python extremely easy. Currently under development, feel free to submit
