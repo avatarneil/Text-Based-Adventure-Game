@@ -17,9 +17,14 @@ def test_suite():
                                    "a container for holding items",
                                    "a container")
 
-    print("{0}\n{1}\n{2}\n{3}\n{4}\n".format(
+    '''print("{0}\n{1}\n{2}\n{3}\n{4}\n".format(
         testStdObject, testLiving, testPlayer, testItem, testContainer
-    ))
+    ))'''
+    print(testStdObject)
+    print(testLiving)
+    print(testPlayer)
+    print(testItem)
+    print(testContainer)
 
     testPlayer.inventory.show_contents()
     print("TestPlayer has TestItem: {0}\n".format(testPlayer.has_item(testItem)))
@@ -37,6 +42,9 @@ def test_suite():
         tbag.Lang.A("banana"), tbag.Lang.A("apple")
     ))
 
-    tbag.Lang.prettyPrint("these violent delights have violent ends")
+    tbag.Lang.prettify("these violent delights have violent ends")
+
+    while True:
+        print(tbag.Lang.prettify(input()))
 
 test_suite()

@@ -18,6 +18,7 @@ class Lang():
         """ Returns 'an' if thing starts with a vowel,
         otherwise returns 'a'. """
 
+        if not thing: return
         return 'an ' + thing if thing[0] in ['a', 'e', 'i', 'o', 'u'] else 'a ' + thing
 
     @classmethod
@@ -123,7 +124,7 @@ class Living(StdObject):
         self.inventory = Container("{0}'s inventory".format(self.name))
 
     def __str__(self):
-        return "{0} {1} Living named '{2}'".format(Lang.a(Lang.gender(self)), self.race, self.name)
+        return Lang.a("{0} {1} Living named '{2}'".format(Lang.gender(self), self.race, self.name))
 
     def __repr__(self):
         return "Living\nName: {0}\nlongDesc: {1}\nshortDesc: {2}\ngender: {3}\nrace: {4}".format(
@@ -132,7 +133,7 @@ class Living(StdObject):
     def give_item(self, item):
         """ Inserts the given item into this Living's inventory. """
 
-        self.inventory.insert(item)
+        self.inventory.add_item(item)
 
     def has_item(self, item) -> bool:
         """ Returns whether or not this Living currently has
@@ -159,7 +160,7 @@ class Player(Living):
         super().__init__(name, longDesc, shortDesc, gender, race)
 
     def __str__(self):
-        return "{0} {1} Player named '{2}'".format(Lang.a(Lang.gender(self)), self.race, self.name)
+        return Lang.a("{0} {1} Player named '{2}'".format(Lang.gender(self), self.race, self.name))
 
     def __repr__(self):
         return "Player\nName: {0}\nlongDesc: {1}\nshortDesc: {2}\ngender: {3}\nrace: {4}".format(
@@ -216,7 +217,7 @@ class Container(Item):
         """ Returns whether or not the Container currently contains
         the specified item. """
 
-        return item in self.inventory
+        return item in self.contents
 
     def transfer_to(self, other, item) -> bool:
         """ Transfers an item from this Container's inventory to another's. 
