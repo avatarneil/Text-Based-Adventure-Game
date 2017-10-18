@@ -55,7 +55,7 @@ class Lang():
                 return "inputData is not parsable as a string"
 
     @classmethod
-    def prettyPrint(cls, phrase) -> str:
+    def prettify(cls, phrase) -> str:
         """ Nicely formats and prints a given phrase. """
 
         if type(phrase) is not str:
@@ -73,7 +73,7 @@ class Lang():
             if i == 0 or split[i-1] == '.': # if it's the first word in a
                 split[i] = word.capitalize() # sentence, capitalize it
 
-        print(' '.join(split))
+        return ' '.join(split)
 
 class StdObject():
     """ Base object from which all other objects derive from.
@@ -92,13 +92,28 @@ class StdObject():
         return "StdObject\nName: {0}\nlongDesc: {1}\nshortDesc: {2}"\
                "\n".format(self.name, self.longDesc, self.shortDesc)
 
-    def attach_action(self, name, action):
-        self.actions[name] = action
+    def attach_action(self, action_name, action):
+        """ Adds an Action to this objects dictionary
+        of valid actions to perform on it. """
+
+        self.actions[action_name] = action
+    
+    def detach_action(self, action_name):
+        """ Deletes an action from this object's dictionary
+        of valid actions to perform on it. """
+
+        del self.actions[action_name]
+    
+    def has_action(self, action_name) -> bool:
+        """ Returns whether or not this object has an action
+        with the given name. (True/False) """
+
+        return self.actions[action_name]
 
 
 class Living(StdObject):
-    """ Base class for all living things.
-    Should never be used directly, only derived from. """
+    """ Base class from which all living things derive from.
+    Should never be used directly. """
 
     def __init__(self, name, longDesc="", shortDesc="",
                  gender="x", race="human"):
@@ -108,7 +123,7 @@ class Living(StdObject):
         self.inventory = Container("{0}'s inventory".format(self.name))
 
     def __str__(self):
-        return "a {0} {1} Living named '{2}'".format(Lang.gender(self), self.race, self.name)
+        return "{0} {1} Living named '{2}'".format(Lang.a(Lang.gender(self)), self.race, self.name)
 
     def __repr__(self):
         return "Living\nName: {0}\nlongDesc: {1}\nshortDesc: {2}\ngender: {3}\nrace: {4}".format(
@@ -125,6 +140,16 @@ class Living(StdObject):
 
         return self.inventory.has_item(item)
 
+    def do_action(self, action_name, target):
+        """ Attempts to perform the specified action on the specified target.
+        Returns True if successful, otherwise returns False. """
+
+        if target.has_action(action_name):
+            target.actions[action_name].execute(self, target)
+            return True
+        else:
+            return False
+
 
 class Player(Living):
     """ Controls the Player and handles interaction. """
@@ -134,7 +159,7 @@ class Player(Living):
         super().__init__(name, longDesc, shortDesc, gender, race)
 
     def __str__(self):
-        return "a {0} {1} Player named '{2}'".format(Lang.gender(self), self.race, self.name)
+        return "{0} {1} Player named '{2}'".format(Lang.a(Lang.gender(self)), self.race, self.name)
 
     def __repr__(self):
         return "Player\nName: {0}\nlongDesc: {1}\nshortDesc: {2}\ngender: {3}\nrace: {4}".format(
@@ -161,7 +186,7 @@ class Container(Item):
 
     def __init__(self, name, longDesc="", shortDesc=""):
         super().__init__(name, longDesc, shortDesc)
-        self.inventory = []
+        self.contents = []
 
     def __str__(self):
         return "a Container called '{0}'".format(self.name)
@@ -174,18 +199,18 @@ class Container(Item):
         """ Prints the name of the container followed by
         its contents, each in a new line. """
 
-        if not self.inventory:
-            Lang.prettyPrint("{0} is empty.".format(self.name))
+        if not self.contents:
+            print(Lang.prettify("{0} is empty.".format(self.name)))
             return
 
         print("Contents of {0}:".format(self.name))
-        for item in self.inventory:
-            Lang.prettyPrint(item)
+        for item in self.contents:
+            print(Lang.prettify(item))
 
-    def insert(self, item):
+    def add_item(self, item):
         """ Inserts the given item into the Container's inventory """
 
-        self.inventory.append(item)
+        self.contents.append(item)
 
     def has_item(self, item) -> bool:
         """ Returns whether or not the Container currently contains
@@ -214,6 +239,13 @@ class Location(StdObject):
         super().__init__(self, name, longDesc, shortDesc)
         self.inventory = Container(
             "Contents of Location '{0}'".format(self.name))
+    
+    def add_item(self, item):
+        self.inventory.append(item)
+    
+    def get_keywords(self) -> list:
+        #TODO: dynamically create lists of every valid keyword for a Location
+        pass
 
 
 class Exit(Item):
@@ -222,6 +254,7 @@ class Exit(Item):
     def __init__(self, name, longDesc, shortDesc):
         super().__init__(self, name, longDesc, shortDesc)
         self.destination = None
+
 
 class Action(): #lawsuit
     """ Actions are attached to StdObjects using StdObject.attach_action().
@@ -240,3 +273,7 @@ class Action(): #lawsuit
             self.synonyms = []
         else:
             self.synonyms = synonyms
+    
+    def execute(self, doer, target) -> bool:
+        return("Default action '{0}' performed by '{1}' on '{2}'.".format(
+                self.name, doer, target))
