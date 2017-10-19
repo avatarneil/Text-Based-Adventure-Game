@@ -57,7 +57,7 @@ class Lang():
 
     @classmethod
     def prettify(cls, phrase) -> str:
-        """ Nicely formats and prints a given phrase. """
+        """ Nicely formats and returns a given string. """
 
         if type(phrase) is not str:
             try:
@@ -71,7 +71,7 @@ class Lang():
         split = phrase.split(' ')
 
         for i, word in enumerate(split):
-            if i == 0 or split[i-1] == '.': # if it's the first word in a
+            if i == 0 or split[i-1][-1] == '.': # if it's the first word in a
                 split[i] = word.capitalize() # sentence, capitalize it
 
         return ' '.join(split)

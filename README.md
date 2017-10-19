@@ -7,4 +7,4 @@ release!
 
 ## Join us on Slack!
 
-Come help out with development by joining our [slack](https://tbagdev-invite.herokuapp.com/)!
+Come help out with development by joining our [Slack](https://tbagdev-invite.herokuapp.com/)!
