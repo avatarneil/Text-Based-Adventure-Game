@@ -1,4 +1,5 @@
 # Text-Based-Adventure-Game (TBAG)
+![alttext](https://i.imgur.com/6NkHNNl.png)
 
 A lightweight, customizable module designed to make building a text-adventure
 game in python extremely easy. Currently under development, feel free to submit
