@@ -244,7 +244,7 @@ class Container(Item):
 class Location(StdObject):
     """ Handles the contents of a certain game location. """
 
-    def __init__(self, name, longDesc, shortDesc):
+    def __init__(self, name, longDesc="", shortDesc=""):
         super().__init__(self, name, longDesc, shortDesc)
         self.inventory = Container(
             "Contents of Location '{0}'".format(self.name))
@@ -269,13 +269,17 @@ class Exit(StdObject):
         self.destination = None
 
 class Game():
-    limbo = Location("limbo", "where things go when they aren't needed",
-                     "an inaccessible void")
+    limbo = Location("limbo", "where things go when they aren't needed", "an inaccessible void")
     def __init__(self):
-        self.heartrate = 1000 # game heartbeat in ms
+        self.heartbeat = 1000 # game heartbeat in ms
         self.currLoc = limbo
         self.player = None
+        self.locations = {}
     
     def init_player(self, name, longDesc="", shortDesc="",
                     gender="m", race="human"):
         self.player = Player(name, longDesc, shortDesc, gender, race)
+        
+    
+    def init_location(self, name, longDesc, shortDesc):
+        self.locations[name] = Location(name, longDesc, shortDesc)

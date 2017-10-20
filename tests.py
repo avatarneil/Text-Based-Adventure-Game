@@ -39,7 +39,10 @@ def test_suite():
 
     print(tbag.Lang.prettify("these violent delights have violent ends. it doesnt look like anything to me"))
 
-    while True:
-        print(tbag.Lang.prettify(input()))
+    game = tbag.Game()
+    game.init_player("Zac", "the test player", "a player")
+    game.init_location("forest", "a clearing in the forest", "a clearing")
+
+    gprint(game.locations['forest'].get_desc())
 
 test_suite()
