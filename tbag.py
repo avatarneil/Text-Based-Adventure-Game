@@ -5,7 +5,6 @@ player-driven text-based experiences.
 """
 
 import sys
-import numpy
 
 #pylint: disable=too-many-arguments
 #pylint: disable=too-few-public-methods
