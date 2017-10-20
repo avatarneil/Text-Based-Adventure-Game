@@ -42,6 +42,10 @@ def test_suite():
     game = tbag.Game()
     game.init_player("Zac", "the test player", "a player")
     game.init_location("forest", "a clearing in the forest", "a clearing")
+    game.locations['forest'].add_item(
+        tbag.Item("mushroom","a short, brown mushroom growing by a tree stump",
+                  "a brown mushroom")
+    )
 
     print(game.locations['forest'].get_desc())
 
