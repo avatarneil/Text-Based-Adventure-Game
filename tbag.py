@@ -67,10 +67,8 @@ class Lang():
             except AttributeError:
                 return "phrase is not parsable as a string"
 
-        if phrase[len(phrase) - 1].isalnum():
-            phrase = phrase + '.'
-
         split = phrase.split(' ')
+        print("split: {0}".format(split))
 
         contractions = {"isnt": "isn't",
                         "arent": "aren't",
@@ -96,13 +94,21 @@ class Lang():
                         "mustve": "must've"
                         }
 
-        for i, word in enumerate(split):
-            if word in contractions:
-                split[i] = contractions[word]
-            elif i == 0 or split[i - 1][-1] == '.':  # if it's the first word in a
-                split[i] = word.capitalize()  # sentence, capitalize it
+        for i in range(len(split)):
+            word = split[i]
+            if word.lower() in contractions:
+                word = contractions[word.lower()]
+            if i == 0 or split[i - 1][-1] == '.':  # if it's the first word in a
+                word = word.capitalize()  # sentence, capitalize it
+            
+            split[i] = word
 
-        return ' '.join(split)
+        if phrase[len(phrase) - 1].isalnum():
+            phrase = phrase + '.'
+        
+        pretty = ' '.join(split)
+        print("returning {0}\n".format(pretty))
+        return pretty
 
 
 class StdObject():

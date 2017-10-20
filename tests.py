@@ -49,12 +49,19 @@ def test_suite():
 
 
 def contraction_tests():
-    if (tbag.Lang.prettify(sys.argv[2]) == sys.argv[3]):
-        print(sys.argv[1] + "does match with " +
-              sys.argv[2] + "Passes contraction_tests")
+    arg1 = sys.argv[2]
+    arg2 = sys.argv[3]
+    a1_pretty = tbag.Lang.prettify(arg1)
+    a2_pretty = tbag.Lang.prettify(arg2)
+
+    print("arg1: {0} | arg2: {1}\na1_p: {2} | a2_p: {3}".format(
+        arg1, arg2, a1_pretty, a2_pretty
+    ))
+
+    if (a1_pretty == a2_pretty):
+        print("'{0}' matches '{1}'\n{1} passes contraction_tests".format(arg1, arg2))
     else:
-        print("\nFailed, " + sys.argv[2] + " does not map to " +
-              sys.argv[3] + "\nit maps to " + tbag.Lang.prettify(sys.argv[2]))
+        print("Failed {0} does not map to {1}. It maps to {2}".format(arg1, arg2, a1_pretty))
 
 
 if len(sys.argv) > 1:
