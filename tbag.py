@@ -70,9 +70,14 @@ class Lang():
 
         split = phrase.split(' ')
 
+        contractions_bad = ["doesnt", "wont", "cant"]
+        contractions_good = ["doesn't", "won't", "can't"]
+
         for i, word in enumerate(split):
             if i == 0 or split[i-1][-1] == '.': # if it's the first word in a
                 split[i] = word.capitalize() # sentence, capitalize it
+            if word in contractions_bad:
+                split[i] = contractions_good[contractions_bad.index(word)]
 
         return ' '.join(split)
 
