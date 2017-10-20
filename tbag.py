@@ -289,4 +289,10 @@ class Game():
         try:
             self.locations[loc_name].add_item(thing)
         except KeyError:
-            return "Failed: no locations named '{0}'".format(loc_name)
+            return "failed: no locations named '{0}'".format(loc_name)
+    
+    def set_loc(self, loc_name):
+        try:
+            self.currLoc = self.locations[loc_name]
+        except ValueError:
+            return "failed: no locations named '{0}'".format(loc_name)
