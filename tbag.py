@@ -245,7 +245,7 @@ class Location(StdObject):
     """ Handles the contents of a certain game location. """
 
     def __init__(self, name, longDesc="", shortDesc=""):
-        super().__init__(self, name, longDesc, shortDesc)
+        super().__init__(name, longDesc, shortDesc)
         self.inventory = Container(
             "Contents of Location '{0}'".format(self.name))
 
@@ -256,7 +256,7 @@ class Location(StdObject):
         # TODO: dynamically create lists of every valid keyword for a Location
         pass
 
-    def get_desc():
+    def get_desc(self):
         contents_descs = [Lang.a(x.shortDesc) for x in self.inventory.contents]
         return Lang.prettify("{0}. there is {1}".format(self.shortDesc, ', '.join(contents_descs)))
 
@@ -265,14 +265,15 @@ class Exit(StdObject):
     """ Handles moving the Player from one Location to another. """
 
     def __init__(self, name, longDesc, shortDesc):
-        super().__init__(self, name, longDesc, shortDesc)
+        super().__init__(name, longDesc, shortDesc)
         self.destination = None
 
 class Game():
-    limbo = Location("limbo", "where things go when they aren't needed", "an inaccessible void")
     def __init__(self):
+        self.limbo = Location("limbo", "where things go when they aren't needed",
+                              "an inaccessible void")
         self.heartbeat = 1000 # game heartbeat in ms
-        self.currLoc = limbo
+        self.currLoc = self.limbo
         self.player = None
         self.locations = {}
     

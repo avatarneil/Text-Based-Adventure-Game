@@ -43,6 +43,6 @@ def test_suite():
     game.init_player("Zac", "the test player", "a player")
     game.init_location("forest", "a clearing in the forest", "a clearing")
 
-    gprint(game.locations['forest'].get_desc())
+    print(game.locations['forest'].get_desc())
 
 test_suite()
