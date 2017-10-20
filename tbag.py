@@ -274,6 +274,7 @@ class Action():  # lawsuit
 
     def __init__(self, name, base, tell=None, synonyms=None):
         self.base = base  # eg. write, open, go
+        self.name = name
         if not tell:  # eg. writes, opens, goes
             self.tell = base + 's'
         else:
