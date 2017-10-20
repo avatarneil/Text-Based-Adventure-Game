@@ -267,27 +267,3 @@ class Exit(StdObject):
     def __init__(self, name, longDesc, shortDesc):
         super().__init__(self, name, longDesc, shortDesc)
         self.destination = None
-
-
-class Action():  # lawsuit
-    """ Actions are attached to StdObjects using StdObject.attach_action().
-    Once an action has been atatched to a StdObject, any living can perform
-    that action using Living.do_action() """
-    # TODO: StdObject.attach_action()
-    # TODO: Living.do_action()
-
-    def __init__(self, name, base, tell=None, synonyms=None):
-        self.base = base  # eg. write, open, go
-        self.name = name
-        if not tell:  # eg. writes, opens, goes
-            self.tell = base + 's'
-        else:
-            self.tell = tell
-        if not synonyms:
-            self.synonyms = []
-        else:
-            self.synonyms = synonyms
-
-    def execute(self, doer, target) -> bool:
-        return("Default action '{0}' performed by '{1}' on '{2}'.".format(
-               self.name, doer, target))
