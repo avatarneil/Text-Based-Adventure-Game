@@ -10,6 +10,7 @@ import numpy
 #pylint: disable=too-many-arguments
 #pylint: disable=too-few-public-methods
 
+
 class Lang():
     """ Language class that has methods for nice output. """
 
@@ -18,7 +19,8 @@ class Lang():
         """ Returns 'an' if thing starts with a vowel,
         otherwise returns 'a'. """
 
-        if not thing: return
+        if not thing:
+            return
         return 'an ' + thing if thing[0] in ['a', 'e', 'i', 'o', 'u'] else 'a ' + thing
 
     @classmethod
@@ -65,21 +67,43 @@ class Lang():
             except AttributeError:
                 return "phrase is not parsable as a string"
 
-        if phrase[len(phrase)-1].isalnum():
+        if phrase[len(phrase) - 1].isalnum():
             phrase = phrase + '.'
 
         split = phrase.split(' ')
 
-        contractions_bad = ["doesnt", "wont", "cant"]
-        contractions_good = ["doesn't", "won't", "can't"]
+        contractions = {"isnt": "isn't",
+                        "arent": "aren't",
+                        "wasnt": "wasn't",
+                        "werent": "weren't",
+                        "havent": "haven't",
+                        "hasnt": "hasn't",
+                        "hadnt": "hadn't",
+                        "wont": "won't",
+                        "wouldnt": "wouldn't",
+                        "dont": "don't",
+                        "doesnt": "doesn't",
+                        "didnt": "didn't",
+                        "cant": "can't",
+                        "couldnt": "couldn't",
+                        "shouldnt": "shouldn't",
+                        "mightnt": "mightn't",
+                        "mustnt": "mustn't",
+                        "wouldve": "would've",
+                        "shouldve": "should've",
+                        "couldve": "could've",
+                        "mightve": "might've",
+                        "mustve": "must've"
+                        }
 
         for i, word in enumerate(split):
-            if i == 0 or split[i-1][-1] == '.': # if it's the first word in a
-                split[i] = word.capitalize() # sentence, capitalize it
-            if word in contractions_bad:
-                split[i] = contractions_good[contractions_bad.index(word)]
+            if word in contractions:
+                split[i] = contractions[word]
+            elif i == 0 or split[i - 1][-1] == '.':  # if it's the first word in a
+                split[i] = word.capitalize()  # sentence, capitalize it
 
         return ' '.join(split)
+
 
 class StdObject():
     """ Base object from which all other objects derive from.
@@ -103,13 +127,13 @@ class StdObject():
         of valid actions to perform on it. """
 
         self.actions[action_name] = action
-    
+
     def detach_action(self, action_name):
         """ Deletes an action from this object's dictionary
         of valid actions to perform on it. """
 
         del self.actions[action_name]
-    
+
     def has_action(self, action_name) -> bool:
         """ Returns whether or not this object has an action
         with the given name. (True/False) """
@@ -245,12 +269,12 @@ class Location(StdObject):
         super().__init__(self, name, longDesc, shortDesc)
         self.inventory = Container(
             "Contents of Location '{0}'".format(self.name))
-    
+
     def add_item(self, item):
         self.inventory.append(item)
-    
+
     def get_keywords(self) -> list:
-        #TODO: dynamically create lists of every valid keyword for a Location
+        # TODO: dynamically create lists of every valid keyword for a Location
         pass
 
 
@@ -262,7 +286,7 @@ class Exit(Item):
         self.destination = None
 
 
-class Action(): #lawsuit
+class Action():  # lawsuit
     """ Actions are attached to StdObjects using StdObject.attach_action().
     Once an action has been atatched to a StdObject, any living can perform
     that action using Living.do_action() """
@@ -270,8 +294,8 @@ class Action(): #lawsuit
     # TODO: Living.do_action()
 
     def __init__(self, base, tell=None, synonyms=None):
-        self.base = base # eg. write, open, go
-        if not tell: # eg. writes, opens, goes
+        self.base = base  # eg. write, open, go
+        if not tell:  # eg. writes, opens, goes
             self.tell = base + 's'
         else:
             self.tell = tell
@@ -279,7 +303,7 @@ class Action(): #lawsuit
             self.synonyms = []
         else:
             self.synonyms = synonyms
-    
+
     def execute(self, doer, target) -> bool:
         return("Default action '{0}' performed by '{1}' on '{2}'.".format(
-                self.name, doer, target))
+            self.name, doer, target))

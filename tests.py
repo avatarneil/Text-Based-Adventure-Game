@@ -1,4 +1,6 @@
 import tbag
+import sys
+
 
 def test_suite():
     testStdObject = tbag.StdObject("test standard object",
@@ -22,12 +24,14 @@ def test_suite():
     ))
 
     testPlayer.inventory.show_contents()
-    print("TestPlayer has TestItem: {0}\n".format(testPlayer.has_item(testItem)))
+    print("TestPlayer has TestItem: {0}\n".format(
+        testPlayer.has_item(testItem)))
 
     testPlayer.give_item(testItem)
 
     testPlayer.inventory.show_contents()
-    print("TestPlayer has TestItem: {0}\n".format(testPlayer.has_item(testItem)))
+    print("TestPlayer has TestItem: {0}\n".format(
+        testPlayer.has_item(testItem)))
 
     print(tbag.Lang.gender(testPlayer))
     print(tbag.Lang.pronoun(testPlayer))
@@ -37,9 +41,25 @@ def test_suite():
         tbag.Lang.A("banana"), tbag.Lang.A("apple")
     ))
 
-    print(tbag.Lang.prettify("these violent delights have violent ends. it doesnt look like anything to me"))
+    print(tbag.Lang.prettify(
+        "these violent delights have violent ends. it doesnt look like anything to me"))
 
     while True:
         print(tbag.Lang.prettify(input()))
 
-test_suite()
+
+def contraction_tests():
+    if (tbag.Lang.prettify(sys.argv[2]) == sys.argv[3]):
+        print(sys.argv[1] + "does match with " +
+              sys.argv[2] + "Passes contraction_tests")
+    else:
+        print("\nFailed, " + sys.argv[2] + " does not map to " +
+              sys.argv[3] + "\nit maps to " + tbag.Lang.prettify(sys.argv[2]))
+
+
+if len(sys.argv) > 1:
+    if sys.argv[1] == "contraction_tests":
+        contraction_tests()
+
+
+# test_suite()
