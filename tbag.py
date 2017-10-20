@@ -284,3 +284,9 @@ class Game():
     
     def init_location(self, name, longDesc, shortDesc):
         self.locations[name] = Location(name, longDesc, shortDesc)
+    
+    def add_to_loc(self, loc_name, thing):
+        try:
+            self.locations[loc_name].add_item(thing)
+        except KeyError:
+            return "Failed: no locations named '{0}'".format(loc_name)
