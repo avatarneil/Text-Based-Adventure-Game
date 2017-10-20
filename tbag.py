@@ -255,9 +255,13 @@ class Location(StdObject):
     def get_keywords(self) -> list:
         # TODO: dynamically create lists of every valid keyword for a Location
         pass
+    
+    def get_desc():
+        contents_descs = [Lang.a(x.shortDesc) for x in self.inventory.contents]
+        return Lang.prettify("{0}. there is {1}".format(self.shortDesc, ', '.join(contents_descs)))
 
 
-class Exit(Item):
+class Exit(StdObject):
     """ Handles moving the Player from one Location to another. """
 
     def __init__(self, name, longDesc, shortDesc):
