@@ -267,3 +267,15 @@ class Exit(StdObject):
     def __init__(self, name, longDesc, shortDesc):
         super().__init__(self, name, longDesc, shortDesc)
         self.destination = None
+
+class Game():
+    limbo = Location("limbo", "where things go when they aren't needed",
+                     "an inaccessible void")
+    def __init__(self):
+        self.heartrate = 1000 # game heartbeat in ms
+        self.currLoc = limbo
+        self.player = None
+    
+    def init_player(self, name, longDesc="", shortDesc="",
+                    gender="m", race="human"):
+        self.player = Player(name, longDesc, shortDesc, gender, race)
