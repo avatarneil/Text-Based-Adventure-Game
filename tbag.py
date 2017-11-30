@@ -275,19 +275,12 @@ class Exit(StdObject):
         super().__init__(name, longDesc, shortDesc)
         self.destination = None
 
-class Game():
+class World():
     def __init__(self):
         self.limbo = Location("limbo", "where things go when they aren't needed",
                               "an inaccessible void")
-        self.heartbeat = 1000 # game heartbeat in ms
-        self.currLoc = self.limbo
-        self.player = None
+        self.tickspeed = 1000 # game heartbeat in ms
         self.locations = {}
-    
-    def init_player(self, name, longDesc="", shortDesc="",
-                    gender="m", race="human"):
-        self.player = Player(name, longDesc, shortDesc, gender, race)
-        
     
     def init_location(self, name, longDesc, shortDesc):
         self.locations[name] = Location(name, longDesc, shortDesc)
@@ -296,10 +289,4 @@ class Game():
         try:
             self.locations[loc_name].add_item(thing)
         except KeyError:
-            return "failed: no location named '{0}'".format(loc_name)
-    
-    def set_loc(self, loc_name):
-        try:
-            self.currLoc = self.locations[loc_name]
-        except ValueError:
             return "failed: no location named '{0}'".format(loc_name)
