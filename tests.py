@@ -49,5 +49,6 @@ def test_suite():
                    )
 
     print(game.locations['forest'].get_desc())
+    print(game.locations['forest'].get_keywords())
 
 test_suite()

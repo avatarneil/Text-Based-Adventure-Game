@@ -93,6 +93,7 @@ class StdObject():
         self.longDesc = longDesc
         self.shortDesc = shortDesc
         self.actions = {}
+        self.aliases = []
 
     def __str__(self):
         return "a StdObject called '{0}'".format(self.name)
@@ -253,8 +254,14 @@ class Location(StdObject):
         self.inventory.add_item(item)
 
     def get_keywords(self) -> list:
-        # TODO: dynamically create lists of every valid keyword for a Location
-        pass
+        keywords = []
+
+        for i in self.inventory.contents:
+            keywords.append(i.name)
+            keywords += [x for x in i.aliases]
+            keywords += [x for x in i.actions.keys()]
+        
+        return keywords
 
     def get_desc(self):
         contents_descs = [Lang.a(x.shortDesc) for x in self.inventory.contents]
@@ -289,10 +296,10 @@ class Game():
         try:
             self.locations[loc_name].add_item(thing)
         except KeyError:
-            return "failed: no locations named '{0}'".format(loc_name)
+            return "failed: no location named '{0}'".format(loc_name)
     
     def set_loc(self, loc_name):
         try:
             self.currLoc = self.locations[loc_name]
         except ValueError:
-            return "failed: no locations named '{0}'".format(loc_name)
+            return "failed: no location named '{0}'".format(loc_name)
