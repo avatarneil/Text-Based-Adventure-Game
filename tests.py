@@ -40,15 +40,26 @@ def test_suite():
     print(tbag.Lang.prettify("these violent delights have violent ends. it doesnt look like anything to me"))
 
     world = tbag.World()
-    '''world.init_player("Zac", "the test player", "a player")
+    '''world.init_player(
     world.init_location("forest", "a clearing in the forest", "a clearing")
     world.add_to_loc('forest',
-                    tbag.Item("mushroom",
-                              "a short, brown mushroom growing by a tree stump",
-                              "a brown mushroom")
-                   )
+                    
 
     print(world.locations['forest'].get_desc())
     print(world.locations['forest'].get_keywords())'''
+
+    testLiving.location = 'forest'
+    world.add(testLiving)
+
+
+    mushroom = tbag.Item("mushroom",
+                         "a short, brown mushroom growing by a tree stump",
+                         "a brown mushroom", "forest")
+    
+    world.add(mushroom)
+
+    print(world.get_keywords('forest'))
+    mushroom.add_alias(['shroom', 'shrooms'])
+    print(world.get_keywords('forest'))
 
 test_suite()

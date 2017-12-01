@@ -6,6 +6,7 @@ player-driven text-based experiences.
 
 import sys
 import numpy
+import itertools
 
 #pylint: disable=too-many-arguments
 #pylint: disable=too-few-public-methods
@@ -90,11 +91,11 @@ class StdObject():
 
     def __init__(self, name, longDesc="", shortDesc="", location="limbo"):
         self.name = name
+        self.aliases = [self.name]
         self.location = location
         self.longDesc = longDesc
         self.shortDesc = shortDesc
         self.actions = {}
-        self.aliases = []
 
     def __str__(self):
         return "a StdObject called '{0}'".format(self.name)
@@ -102,6 +103,14 @@ class StdObject():
     def __repr__(self):
         return "StdObject\nName: {0}\nlongDesc: {1}\nshortDesc: {2}"\
                "\n".format(self.name, self.longDesc, self.shortDesc)
+    
+    def add_alias(self, new_alias):
+        if type(new_alias) == type(['list']):
+            self.aliases += new_alias
+        elif type(new_alias) == type('string'):
+            self.aliases.append(new_alias)
+        else:
+            raise(TypeError("New alias must be list or string."))
 
     def attach_action(self, action_name, action):
         """ Adds an Action to this objects dictionary
@@ -247,16 +256,17 @@ class World():
         #self.limbo = Location("limbo", "where things go when they aren't needed",
         #Í                      "an inaccessible void")
         self.tickspeed = 1000 # game heartbeat in ms
-        self.livings = []
-        self.things = []
+        self.livings = {}
+        self.things = {}
     
-    def create(thing):
-        if type(thing) == type(Living()):
-            self.livings.append(thing)
+    def add(self, thing):
+        if type(thing) == Living:
+            self.livings[thing.name] = thing
         else:
-            self.things.append(thing)
+            self.things[thing.name] = thing
     
-    def get_keywords(loc):
-        keywords = []
-        keywords += [l.aliases for l in self.livings if l.location == loc]
-        keywords += [t.aliases for t in self.things if t.location = loc]
+    def get_keywords(self, loc):
+        keywords = list(itertools.chain.from_iterable([x.aliases for x in itertools.chain(self.livings.values(), self.things.values()) if x.location == loc]))
+        # Neil, I apologize in advance for this line ^^^
+
+        return keywords
