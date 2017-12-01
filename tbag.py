@@ -247,4 +247,16 @@ class World():
         #self.limbo = Location("limbo", "where things go when they aren't needed",
         #Í                      "an inaccessible void")
         self.tickspeed = 1000 # game heartbeat in ms
-        self.population = {}
+        self.livings = []
+        self.things = []
+    
+    def create(thing):
+        if type(thing) == type(Living()):
+            self.livings.append(thing)
+        else:
+            self.things.append(thing)
+    
+    def get_keywords(loc):
+        keywords = []
+        keywords += [l.aliases for l in self.livings if l.location == loc]
+        keywords += [t.aliases for t in self.things if t.location = loc]
