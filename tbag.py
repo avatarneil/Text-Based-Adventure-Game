@@ -88,8 +88,9 @@ class StdObject():
     """ Base object from which all other objects derive from.
     Should never be used directly. """
 
-    def __init__(self, name, longDesc="", shortDesc=""):
+    def __init__(self, name, longDesc="", shortDesc="", location="limbo"):
         self.name = name
+        self.location = location
         self.longDesc = longDesc
         self.shortDesc = shortDesc
         self.actions = {}
@@ -125,9 +126,9 @@ class Living(StdObject):
     """ Base class from which all living things derive from.
     Should never be used directly. """
 
-    def __init__(self, name, longDesc="", shortDesc="",
+    def __init__(self, name, longDesc="", shortDesc="", location="limbo",
                  gender="x", race="human"):
-        super().__init__(name, longDesc, shortDesc)
+        super().__init__(name, longDesc, shortDesc, location)
         self.gender = gender
         self.race = race
         self.inventory = Container("{0}'s inventory".format(self.name))
@@ -164,9 +165,9 @@ class Living(StdObject):
 class Player(Living):
     """ Controls the Player and handles interaction. """
 
-    def __init__(self, name, longDesc="", shortDesc="",
+    def __init__(self, name, longDesc="", shortDesc="", location="limbo",
                  gender="x", race="human"):
-        super().__init__(name, longDesc, shortDesc, gender, race)
+        super().__init__(name, longDesc, shortDesc, location, gender, race)
 
     def __str__(self):
         return Lang.a("{0} {1} Player named '{2}'".format(Lang.gender(self), self.race, self.name))
@@ -179,8 +180,8 @@ class Player(Living):
 class Item(StdObject):
     """ Generic base class for interactible items. """
 
-    def __init__(self, name, longDesc="", shortDesc="", value=0):
-        super().__init__(name, longDesc, shortDesc)
+    def __init__(self, name, longDesc="", shortDesc="", location="limbo", value=0):
+        super().__init__(name, longDesc, shortDesc, location)
         value = value
 
     def __str__(self):
@@ -194,8 +195,8 @@ class Item(StdObject):
 class Container(Item):
     """ Game object that is used to store other objects. """
 
-    def __init__(self, name, longDesc="", shortDesc=""):
-        super().__init__(name, longDesc, shortDesc)
+    def __init__(self, name, longDesc="", shortDesc="", location="limbo"):
+        super().__init__(name, longDesc, shortDesc, location)
         self.contents = []
 
     def __str__(self):
@@ -242,7 +243,7 @@ class Container(Item):
             return False
 
 
-class Location(StdObject):
+'''class Location(StdObject):
     """ Handles the contents of a certain game location. """
 
     def __init__(self, name, longDesc="", shortDesc=""):
@@ -265,25 +266,25 @@ class Location(StdObject):
 
     def get_desc(self):
         contents_descs = [Lang.a(x.shortDesc) for x in self.inventory.contents]
-        return Lang.prettify("{0}. there is {1}".format(self.shortDesc, ', '.join(contents_descs)))
+        return Lang.prettify("{0}. there is {1}".format(self.shortDesc, ', '.join(contents_descs)))'''
 
 
-class Exit(StdObject):
+'''class Exit(StdObject):
     """ Handles moving the Player from one Location to another. """
 
     def __init__(self, name, longDesc, shortDesc):
         super().__init__(name, longDesc, shortDesc)
-        self.destination = None
+        self.destination = None'''
 
 class World():
     def __init__(self):
-        self.limbo = Location("limbo", "where things go when they aren't needed",
-                              "an inaccessible void")
+        #self.limbo = Location("limbo", "where things go when they aren't needed",
+        #Í                      "an inaccessible void")
         self.tickspeed = 1000 # game heartbeat in ms
-        self.locations = {}
+        self.population = {}
     
-    def init_location(self, name, longDesc, shortDesc):
-        self.locations[name] = Location(name, longDesc, shortDesc)
+    '''def init_location(self, name, longDesc, shortDesc):
+        self.locations[name] = Location(name, longDesc, shortDesc)'''
     
     def add_to_loc(self, loc_name, thing):
         try:
