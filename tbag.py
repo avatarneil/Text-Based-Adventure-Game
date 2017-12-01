@@ -242,52 +242,9 @@ class Container(Item):
         except ValueError:
             return False
 
-
-'''class Location(StdObject):
-    """ Handles the contents of a certain game location. """
-
-    def __init__(self, name, longDesc="", shortDesc=""):
-        super().__init__(name, longDesc, shortDesc)
-        self.inventory = Container(
-            "Contents of Location '{0}'".format(self.name))
-
-    def add_item(self, item):
-        self.inventory.add_item(item)
-
-    def get_keywords(self) -> list:
-        keywords = []
-
-        for i in self.inventory.contents:
-            keywords.append(i.name)
-            keywords += [x for x in i.aliases]
-            keywords += [x for x in i.actions.keys()]
-        
-        return keywords
-
-    def get_desc(self):
-        contents_descs = [Lang.a(x.shortDesc) for x in self.inventory.contents]
-        return Lang.prettify("{0}. there is {1}".format(self.shortDesc, ', '.join(contents_descs)))'''
-
-
-'''class Exit(StdObject):
-    """ Handles moving the Player from one Location to another. """
-
-    def __init__(self, name, longDesc, shortDesc):
-        super().__init__(name, longDesc, shortDesc)
-        self.destination = None'''
-
 class World():
     def __init__(self):
         #self.limbo = Location("limbo", "where things go when they aren't needed",
         #Í                      "an inaccessible void")
         self.tickspeed = 1000 # game heartbeat in ms
         self.population = {}
-    
-    '''def init_location(self, name, longDesc, shortDesc):
-        self.locations[name] = Location(name, longDesc, shortDesc)'''
-    
-    def add_to_loc(self, loc_name, thing):
-        try:
-            self.locations[loc_name].add_item(thing)
-        except KeyError:
-            return "failed: no location named '{0}'".format(loc_name)
