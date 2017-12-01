@@ -51,15 +51,15 @@ def test_suite():
     testLiving.location = 'forest'
     world.add(testLiving)
 
-
     mushroom = tbag.Item("mushroom",
                          "a short, brown mushroom growing by a tree stump",
                          "a brown mushroom", "forest")
+
+
+    mushroom.add_alias(['shroom', 'shrooms'])
     
     world.add(mushroom)
 
-    print(world.get_keywords('forest'))
-    mushroom.add_alias(['shroom', 'shrooms'])
     print(world.get_keywords('forest'))
 
 test_suite()

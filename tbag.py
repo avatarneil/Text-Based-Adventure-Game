@@ -128,7 +128,7 @@ class StdObject():
         """ Returns whether or not this object has an action
         with the given name. (True/False) """
 
-        return self.actions[action_name]
+        return action_name in self.actions.keys()
 
 
 class Living(StdObject):
@@ -163,9 +163,9 @@ class Living(StdObject):
     def do_action(self, action_name, target):
         """ Attempts to perform the specified action on the specified target.
         Returns True if successful, otherwise returns False. """
+        # this would be so much easier in javascript lol
 
         if target.has_action(action_name):
-            target.actions[action_name].execute(self, target)
             return True
         else:
             return False
@@ -254,7 +254,7 @@ class Container(Item):
 class World():
     """ Everything in the game is connected to
     everything else via the World. """
-    
+
     def __init__(self):
         self.tickspeed = 1000 # game heartbeat in ms
         self.livings = {}
