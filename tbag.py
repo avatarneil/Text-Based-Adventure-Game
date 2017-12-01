@@ -252,20 +252,25 @@ class Container(Item):
             return False
 
 class World():
+    """ Everything in the game is connected to
+    everything else via the World. """
+    
     def __init__(self):
-        #self.limbo = Location("limbo", "where things go when they aren't needed",
-        #Í                      "an inaccessible void")
         self.tickspeed = 1000 # game heartbeat in ms
         self.livings = {}
         self.things = {}
     
     def add(self, thing):
+        """ Adds an object into the world space. """
+
         if type(thing) == Living:
             self.livings[thing.name] = thing
         else:
             self.things[thing.name] = thing
     
     def get_keywords(self, loc):
+        """ Returns a list of all valid keywords for the given location. """
+
         keywords = list(itertools.chain.from_iterable([x.aliases for x in itertools.chain(self.livings.values(), self.things.values()) if x.location == loc]))
         # Neil, I apologize in advance for this line ^^^
 
