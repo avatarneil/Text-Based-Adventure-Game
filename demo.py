@@ -17,12 +17,12 @@ class Note(tbag.Item):
     def set_text(self, lines):
         self.text = lines
     
-    def do_action(self, action_name, doer):
-        tbag.Console.debug("{0} doing action {1} from doer {2}".format(self.name, action_name, doer))
+    def execute(self, action, doer):
+        super().execute(action, doer)
         do = "nothing"
         for actions in self.actions.values():
             for a in actions:
-                if a == action_name:
+                if a == action:
                     do = a
         
         if do == "read":
@@ -33,8 +33,6 @@ class Note(tbag.Item):
         elif do == "destroy":
             tbag.Console.tell("You toss the letter in the trash can. Out of sight, out of mind.")
             del tbag.world.population[self.name]
-        elif do == "nothing":
-            tbag.Console.tell("You can't {0} the {1}.".format(action_name, self.name))
 
 
 class Customer(tbag.Living):
@@ -60,7 +58,7 @@ jake.add_alias("jake")
 cia = tbag.Living("CIA Agent", "starbucks")
 cia.add_alias(["agent","spy"])
 
-note = Note("mysterious note")
+note = Note("mysterious note", "starbucks")
 note.add_alias(["note","letter","message","paper"])
 note.set_text(["Dear {0},".format(tbag.world.player.name),"",
                  "You have been selected from a pool of over 1000 candidates",

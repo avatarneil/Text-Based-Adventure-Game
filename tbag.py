@@ -77,6 +77,10 @@ class Console():
     @classmethod
     def tell(cls, msg):
         sys.stdout.write("{0}\n\n".format(msg))
+
+    @classmethod
+    def say(cls, name, msg):
+        sys.stdout.write("{0} says, \"{1}\"\n".format(name, msg))
     
     @classmethod
     def debug(cls, msg):
@@ -100,7 +104,7 @@ class StdObject():
     def __init__(self, name, location="limbo"):
         self.name = name
         self.aliases = [self.name]
-        self.actions = []
+        self.actions = {}
         self.location = location
         self.description = ""
 
@@ -123,10 +127,14 @@ class StdObject():
             self.aliases.append(new_alias)
         else:
             raise(TypeError("New alias must be list or string."))
+    
+    def has_action(self, action) -> bool:
+        if action in list(itertools.chain.from_iterable(self.actions.values())):
+            return True
+        return False
 
-    def do_action(self, action, doer, target):
-        # TODO: handle actions
-        pass
+    def execute(self, action, doer):
+        Console.debug("Executing action: {0} | target: {1} | doer: {2}".format(action, self.name, doer))
 
 
 class Living(StdObject):
@@ -158,7 +166,17 @@ class Living(StdObject):
         return self.inventory.has_item(item)
 
     def say(self, msg):
-        Console.tell("{0} says, \"{1}\"".format(self.name, msg))
+        Console.say(self.name, msg)
+    
+    def do_action(self, action, target):
+        if not self.location == target.location:
+            Console.tell("You don't see a {0} here.".format(target.name))
+            return False
+        elif not target.has_action(action):
+            Console.tell("You can't {0} the {1}.".format(action, target.name))
+            return False
+        else:
+            target.execute(action, self)
 
 
 class Player(Living):
@@ -182,6 +200,9 @@ class Item(StdObject):
     def __init__(self, name, location="limbo", value=0):
         super().__init__(name, location)
         self.value = value
+        self.actions = {
+            "pickup": ["pickup","take","grab"]
+        }
 
     def __str__(self):
         return "an Item called '{0}'".format(self.name)
@@ -189,6 +210,13 @@ class Item(StdObject):
     def __repr__(self):
         return "Item\nName: {0}\description: {1}\location: {2}"\
             "\n".format(self.name, self.description, self.location)
+    
+    def execute(self, action, doer):
+        super().execute(action, doer)
+        if action == "pickup":
+            doer.give_item(self)
+            self.location = "{0}'s inventory".format(doer.name)
+            return True
 
 
 class Container(Item):
@@ -269,10 +297,12 @@ class World():
     def get_keywords(self, loc):
         """ Returns a list of all valid keywords for the given location. """
 
-        pop_keys = [x.aliases for x in self.population.values()]
-        action_keys = [x.actions for x in self.population.values()]
-
-        keywords = list(itertools.chain.from_iterable(pop_keys + action_keys))
+        keywords = []
+        for i in self.population.values():
+            keywords += i.aliases
+            for a in i.actions.values():
+                keywords += a
+        
         return keywords
 
     def parse_input(self, input_data):
@@ -282,7 +312,7 @@ class World():
             try:
                 input_data = str(input_data)
             except AttributeError:
-                return "input_data is not parsable as a string"
+                return "input_data is not parseable as a string"
 
         keywords = self.get_keywords(self.player.location)
         input_words = input_data.split(' ')
@@ -291,17 +321,15 @@ class World():
         if not valid_words:
             Console.tell("That's not possible.")
         elif len(valid_words) == 1:
-            self.execute(self.player, valid_words[0])
+            self.player.do_action(valid_words[0])
         elif len(valid_words) > 1:
-            self.execute(self.player, valid_words[0], valid_words[1])
+            self.execute(valid_words[0], valid_words[1])
 
-    def execute(self, doer, action, target=None):
-        Console.debug("doer: {0} | action: {1} | target: {2}".format(
-            doer.name, action, target))
+    def execute(self, action, target=None):
             
         for i in self.population.values():
             if target in i.aliases:
-                i.do_action(action, doer)
+                self.player.do_action(action, i)
                 return
 
         Console.tell("You can't do that.")
