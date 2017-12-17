@@ -46,7 +46,7 @@ class Lang():
         return {'m': 'he', 'f': 'she', 'x': 'they', 'n': 'it'}[living.gender]
 
     @classmethod
-    def inputParser(cls, inputData):
+    def parse_input(cls, inputData):
         """ Takes inputs and parses into a more convenient datatype """
 
         if type(inputData) is str:  # if inputData is a string case
@@ -89,7 +89,7 @@ class StdObject():
     """ Base object from which all other objects derive from.
     Should never be used directly. """
 
-    def __init__(self, name, longDesc="", shortDesc="", location="limbo"):
+    def __init__(self, name, location="limbo"):
         self.name = name
         self.aliases = [self.name]
         self.location = location
@@ -99,8 +99,11 @@ class StdObject():
         return "a StdObject called '{0}'".format(self.name)
 
     def __repr__(self):
-        return "StdObject\nName: {0}\nlongDesc: {1}\nshortDesc: {2}"\
-               "\n".format(self.name, self.longDesc, self.shortDesc)
+        return "StdObject\nName: {0}\Description: {1}\Location: {2}"\
+               "\n".format(self.name, self.description, self.location)
+    
+    def set_desc(self, new_desc):
+        self.description = new_desc
     
     def add_alias(self, new_alias):
         if type(new_alias) == type(['list']):
@@ -115,19 +118,18 @@ class Living(StdObject):
     """ Base class from which all living things derive from.
     Should never be used directly. """
 
-    def __init__(self, name, longDesc="", shortDesc="", location="limbo",
-                 gender="x", race="human"):
-        super().__init__(name, longDesc, shortDesc, location)
-        self.gender = gender
-        self.race = race
+    def __init__(self, name, location="limbo"):
+        super().__init__(name, location)
+        self.gender = "x"
+        self.race = "human"
         self.inventory = Container("{0}'s inventory".format(self.name))
 
     def __str__(self):
         return Lang.a("{0} {1} Living named '{2}'".format(Lang.gender(self), self.race, self.name))
 
     def __repr__(self):
-        return "Living\nName: {0}\nlongDesc: {1}\nshortDesc: {2}\ngender: {3}\nrace: {4}".format(
-            self.name, self.longDesc, self.shortDesc, self.gender, self.race)
+        return "Living\nName: {0}\description: {1}\location: {2}\ngender: {3}\nrace: {4}".format(
+            self.name, self.description, self.location, self.gender, self.race)
 
     def give_item(self, item):
         """ Inserts the given item into this Living's inventory. """
@@ -140,60 +142,49 @@ class Living(StdObject):
 
         return self.inventory.has_item(item)
 
-    def do_action(self, action_name, target):
-        """ Attempts to perform the specified action on the specified target.
-        Returns True if successful, otherwise returns False. """
-        # this would be so much easier in javascript lol
-
-        if target.has_action(action_name):
-            return True
-        else:
-            return False
-
 
 class Player(Living):
     """ Controls the Player and handles interaction. """
 
-    def __init__(self, name, longDesc="", shortDesc="", location="limbo",
-                 gender="x", race="human"):
-        super().__init__(name, longDesc, shortDesc, location, gender, race)
+    def __init__(self, name, location="limbo"):
+        super().__init__(name, location)
 
     def __str__(self):
         return Lang.a("{0} {1} Player named '{2}'".format(Lang.gender(self), self.race, self.name))
 
     def __repr__(self):
-        return "Player\nName: {0}\nlongDesc: {1}\nshortDesc: {2}\ngender: {3}\nrace: {4}".format(
-            self.name, self.longDesc, self.shortDesc, self.gender, self.race)
+        return "Player\nName: {0}\description: {1}\location: {2}\ngender: {3}\nrace: {4}".format(
+            self.name, self.description, self.location, self.gender, self.race)
 
 
 class Item(StdObject):
     """ Generic base class for interactible items. """
 
-    def __init__(self, name, longDesc="", shortDesc="", location="limbo", value=0):
-        super().__init__(name, longDesc, shortDesc, location)
-        value = value
+    def __init__(self, name, location="limbo", value=0):
+        super().__init__(name, location)
+        self.value = value
 
     def __str__(self):
         return "an Item called '{0}'".format(self.name)
 
     def __repr__(self):
-        return "Item\nName: {0}\nlongDesc: {1}\nshortDesc: {2}"\
-            "\n".format(self.name, self.longDesc, self.shortDesc)
+        return "Item\nName: {0}\description: {1}\location: {2}"\
+            "\n".format(self.name, self.description, self.location)
 
 
 class Container(Item):
     """ Game object that is used to store other objects. """
 
-    def __init__(self, name, longDesc="", shortDesc="", location="limbo"):
-        super().__init__(name, longDesc, shortDesc, location)
+    def __init__(self, name, location="limbo"):
+        super().__init__(name, location)
         self.contents = []
 
     def __str__(self):
         return "a Container called '{0}'".format(self.name)
 
     def __repr__(self):
-        return "Container\nName: {0}\nlongDesc: {1}\nshortDesc: {2}"\
-               "\n".format(self.name, self.longDesc, self.shortDesc)
+        return "Container\nName: {0}\description: {1}\location: {2}"\
+               "\n".format(self.name, self.description, self.location)
 
     def show_contents(self):
         """ Prints the name of the container followed by

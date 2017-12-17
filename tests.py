@@ -1,21 +1,20 @@
 import tbag
 
 def test_suite():
-    testStdObject = tbag.StdObject("test standard object",
-                                   "a generic, standard object with no special properties",
-                                   "a generic object", "limbo")
-    testLiving = tbag.Living("test living",
-                             "a living, breathing being",
-                             "a living thing", "limbo")
-    testPlayer = tbag.Player("test player",
-                             "the star of the show",
-                             "limbo", "you", "m", "human")
-    testItem = tbag.Item("test item",
-                         "a generic item used for testing purposes",
-                         "an item", "limbo")
-    testContainer = tbag.Container("test container",
-                                   "a container for holding items",
-                                   "a container", "limbo")
+    testStdObject = tbag.StdObject("test standard object", "limbo")
+    testStdObject.set_desc("a generic standard object with no special properties")
+
+    testLiving = tbag.Living("test living", "limbo")
+    testLiving.set_desc("a generic test Living with no purpose in life")
+
+    testPlayer = tbag.Player("test player", "limbo")
+    testPlayer.set_desc("the star of the (test) show")
+
+    testItem = tbag.Item("test item", "limbo")
+    testItem.set_desc("a generic item used for testing purposes")
+
+    testContainer = tbag.Container("test container", "limbo")
+    testContainer.set_desc("a test container for holding test items")
 
     print("{0}\n{1}\n{2}\n{3}\n{4}\n".format(
         testStdObject, testLiving, testPlayer, testItem, testContainer
@@ -51,14 +50,11 @@ def test_suite():
     testLiving.location = 'forest'
     world.add(testLiving)
 
-    mushroom = tbag.Item("mushroom",
-                         "a short, brown mushroom growing by a tree stump",
-                         "a brown mushroom", "forest")
-
-
-    mushroom.add_alias(['shroom', 'shrooms'])
+    flower = tbag.Item("flower", "forest")
+    flower.set_desc("a delicate looking rose growing from the base of a tree stump")
+    flower.add_alias('rose')
     
-    world.add(mushroom)
+    world.add(flower)
 
     print(world.get_keywords('forest'))
 

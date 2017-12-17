@@ -6,9 +6,9 @@ import tbag
 
 world = tbag.World()
 
-player = world.add(tbag.Player("Joe"))
-hipster = world.add(tbag.Living("hipster"))
-cia = world.add(tbag.Living("CIA Agent"))
+player = tbag.Player("Joe"))
+hipster = tbag.Living("hipster"))
+cia = tbag.Living("CIA Agent"))
 
-coffee = world.add(tbag.Item("decaf chai latte"))
-money = world.add(tbag.Item("money"))
+coffee = tbag.Item("decaf chai latte"))
+money = tbag.Item("money"))
