@@ -4,18 +4,14 @@
 
 import tbag
 
-world = tbag.World()
+player = tbag.Player("Joe", "home")
+hipster = tbag.Living("hipster")
+cia = tbag.Living("CIA Agent")
 
-player = tbag.Player("Joe", "home"))
-hipster = tbag.Living("hipster"))
-cia = tbag.Living("CIA Agent"))
-
-money = tbag.Item("money"))
+money = tbag.Item("money")
 letter = tbag.Item("letter")
 
 hipster.give_item(money)
 cia.give_item(letter)
 
-coffee = tbag.Item("decaf chai latte", "starbucks"))
-
-world.add([player, hipster, cia, coffee])
+coffee = tbag.Item("decaf chai latte", "starbucks")

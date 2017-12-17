@@ -95,6 +95,9 @@ class StdObject():
         self.location = location
         self.description = ""
 
+        world.add(self)
+            
+
     def __str__(self):
         return "a StdObject called '{0}'".format(self.name)
 
@@ -118,7 +121,7 @@ class Living(StdObject):
     """ Base class from which all living things derive from.
     Should never be used directly. """
 
-    def __init__(self, name, location="limbo"):
+    def __init__(self, name, location="limbo", world="n/a"):
         super().__init__(name, location)
         self.gender = "x"
         self.race = "human"
@@ -146,7 +149,7 @@ class Living(StdObject):
 class Player(Living):
     """ Controls the Player and handles interaction. """
 
-    def __init__(self, name, location="limbo"):
+    def __init__(self, name, location="limbo", world="n/a"):
         super().__init__(name, location)
 
     def __str__(self):
@@ -160,7 +163,7 @@ class Player(Living):
 class Item(StdObject):
     """ Generic base class for interactible items. """
 
-    def __init__(self, name, location="limbo", value=0):
+    def __init__(self, name, location="limbo", world="n/a", value=0):
         super().__init__(name, location)
         self.value = value
 
@@ -175,7 +178,7 @@ class Item(StdObject):
 class Container(Item):
     """ Game object that is used to store other objects. """
 
-    def __init__(self, name, location="limbo"):
+    def __init__(self, name, location="limbo", world="n/a"):
         super().__init__(name, location)
         self.contents = []
 
@@ -246,3 +249,5 @@ class World():
         # Neil, I apologize in advance for this line ^^^
 
         return keywords
+
+world = World()
