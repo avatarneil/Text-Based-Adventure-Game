@@ -76,7 +76,12 @@ class Console():
 
     @classmethod
     def tell(cls, msg):
-        sys.stdout.write("{0}\n".format(msg))
+        sys.stdout.write("{0}\n\n".format(msg))
+    
+    @classmethod
+    def debug(cls, msg):
+        if len(sys.argv) > 1 and sys.argv[1] in ['-d','-debug']:
+            sys.stdout.write(">{0}\n".format(msg))
 
     @classmethod
     def prettyprint(cls, msg):
@@ -85,8 +90,7 @@ class Console():
     @classmethod
     def input(cls):
         cmd = input()
-        cmd_parsed = world.parse_input(cmd)
-        world.execute(cmd_parsed)
+        world.parse_input(cmd)
 
 
 class StdObject():
@@ -265,9 +269,10 @@ class World():
     def get_keywords(self, loc):
         """ Returns a list of all valid keywords for the given location. """
 
-        keywords = list(itertools.chain.from_iterable([x.aliases for x in self.population.values() if x.location == loc]))
-        # Neil, I apologize in advance for this line ^^^
+        pop_keys = [x.aliases for x in self.population.values()]
+        action_keys = [x.actions for x in self.population.values()]
 
+        keywords = list(itertools.chain.from_iterable(pop_keys + action_keys))
         return keywords
 
     def parse_input(self, input_data):
@@ -280,14 +285,25 @@ class World():
                 return "input_data is not parsable as a string"
 
         keywords = self.get_keywords(self.player.location)
-        print(keywords)
         input_words = input_data.split(' ')
-        print(input_words)
         valid_words = [w for w in input_words if w in keywords]
-        print(valid_words)
 
-    def execute(self, cmd):
-        # TODO: extrapolate and execute commands
-        pass
+        if not valid_words:
+            Console.tell("That's not possible.")
+        elif len(valid_words) == 1:
+            self.execute(self.player, valid_words[0])
+        elif len(valid_words) > 1:
+            self.execute(self.player, valid_words[0], valid_words[1])
+
+    def execute(self, doer, action, target=None):
+        Console.debug("doer: {0} | action: {1} | target: {2}".format(
+            doer.name, action, target))
+            
+        for i in self.population.values():
+            if target in i.aliases:
+                i.do_action(action, doer)
+                return
+
+        Console.tell("You can't do that.")
 
 world = World()
