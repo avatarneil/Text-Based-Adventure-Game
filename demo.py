@@ -10,12 +10,11 @@ class Note(tbag.Item):
         super().__init__(name, location)
         self.text = ["letter placeholder text"]
         self.actions = {
-            ["read", "look", "examine"]: "read",
-            ["destroy", "trash", "throw", "toss", "ignore"]: "destroy"
+            "read": ["read", "look", "examine"],
+            "destroy": ["destroy", "trash", "throw", "toss", "ignore"]
         }
     
     def set_text(self, lines):
-        print("Setting text.\n{0}".format(lines))
         self.text = lines
     
     def do_action(self, action_name):
@@ -25,7 +24,7 @@ class Note(tbag.Item):
                 if a == action_name:
                     do = a
         
-        if do = "read":
+        if do == "read":
             print("\n")
             for line in self.text:
                 print(line)
@@ -39,11 +38,11 @@ class Customer(tbag.Living):
     def __init__(self, name, location="limbo"):
         super().__init__(name, location)
         self.appearance = {
-            hair: "brown"
-            eyes: "brown"
-            shirt: "blue t-shirt"
-            pants: "khakis"
-            other: ""
+            hair: "brown",
+            eyes: "brown",
+            shirt: "blue t-shirt",
+            pants: "khakis",
+            other: "",
         }
 
 
