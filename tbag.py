@@ -96,6 +96,7 @@ class StdObject():
     def __init__(self, name, location="limbo"):
         self.name = name
         self.aliases = [self.name]
+        self.actions = []
         self.location = location
         self.description = ""
 
@@ -243,6 +244,7 @@ class World():
     def __init__(self):
         self.tickspeed = 1000 # game heartbeat in ms
         self.population = {}
+        self.locations = {}
         self.player = None
 
     def add(self, thing):
@@ -256,6 +258,9 @@ class World():
                 self.player = i
             else:
                 self.population[i.name] = i
+    
+    def add_loc(self, loc_name, loc_desc):
+        self.locations[loc_name] = loc_desc
 
     def get_keywords(self, loc):
         """ Returns a list of all valid keywords for the given location. """
