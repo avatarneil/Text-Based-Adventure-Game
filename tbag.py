@@ -46,19 +46,6 @@ class Lang():
         return {'m': 'he', 'f': 'she', 'x': 'they', 'n': 'it'}[living.gender]
 
     @classmethod
-    def parse_input(cls, inputData):
-        """ Takes inputs and parses into a more convenient datatype """
-
-        if type(inputData) is str:  # if inputData is a string case
-            firstWord = inputData.partition(' ')[0]
-        else:
-            try:
-                inputData = str(inputData)
-                firstWord = inputData.partition(' ')[0]
-            except AttributeError:
-                return "inputData is not parsable as a string"
-
-    @classmethod
     def prettify(cls, phrase) -> str:
         """ Nicely formats and returns a given string. """
 
@@ -98,8 +85,8 @@ class Console():
     
     @classmethod
     def input(cls):
-        cmd = sys.stdin.read()
-        cmd_parsed = Lang.parse_input(cmd)
+        cmd = input()
+        cmd_parsed = world.parse_input(cmd)
         world.execute(cmd_parsed)
 
 
@@ -175,6 +162,7 @@ class Player(Living):
 
     def __init__(self, name, location="limbo", world="n/a"):
         super().__init__(name, location)
+        self.add_alias(["me","myself"])
 
     def __str__(self):
         return Lang.a("{0} {1} Player named '{2}'".format(Lang.gender(self), self.race, self.name))
@@ -256,15 +244,19 @@ class World():
     def __init__(self):
         self.tickspeed = 1000 # game heartbeat in ms
         self.population = {}
+        self.player = None
     
     def add(self, thing):
         """ Adds an object into the world space. """
 
-        if type(thing) == type([]):
-            for i in thing:
+        if not type(thing) == type([]):
+            thing = [thing]
+        
+        for i in thing:
+            if type(i) is Player:
+                self.player = i
+            else:
                 self.population[i.name] = i
-        else:
-            self.population[thing.name] = thing
     
     def get_keywords(self, loc):
         """ Returns a list of all valid keywords for the given location. """
@@ -273,6 +265,24 @@ class World():
         # Neil, I apologize in advance for this line ^^^
 
         return keywords
+
+    def parse_input(self, input_data):
+        """ Takes inputs and parses into a more convenient datatype """
+
+        if type(input_data) is str:  # if input_data is a string case
+            first_word = input_data.partition(' ')[0]
+        else:
+            try:
+                input_data = str(input_data)
+            except AttributeError:
+                return "input_data is not parsable as a string"
+
+        keywords = self.get_keywords(self.player.location)
+        print(keywords)
+        input_words = input_data.split(' ')
+        print(input_words)
+        valid_words = [w for w in input_words if w in keywords]
+        print(valid_words)
 
     def execute(self, cmd):
         # TODO: extrapolate and execute commands

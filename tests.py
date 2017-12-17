@@ -3,7 +3,6 @@ import tbag
 def test_suite():
     world = tbag.World()
 
-
     testStdObject = tbag.StdObject("test standard object", "limbo")
     testStdObject.set_desc("a generic standard object with no special properties")
 
@@ -56,5 +55,7 @@ def test_suite():
 
     print(tbag.world.get_keywords('forest'))
     print(tbag.world.get_keywords("limbo"))
+
+    print(tbag.world.player)
 
 test_suite()
