@@ -93,9 +93,7 @@ class StdObject():
         self.name = name
         self.aliases = [self.name]
         self.location = location
-        self.longDesc = longDesc
-        self.shortDesc = shortDesc
-        self.actions = {}
+        self.description = ""
 
     def __str__(self):
         return "a StdObject called '{0}'".format(self.name)
@@ -111,24 +109,6 @@ class StdObject():
             self.aliases.append(new_alias)
         else:
             raise(TypeError("New alias must be list or string."))
-
-    def attach_action(self, action_name, action):
-        """ Adds an Action to this objects dictionary
-        of valid actions to perform on it. """
-
-        self.actions[action_name] = action
-
-    def detach_action(self, action_name):
-        """ Deletes an action from this object's dictionary
-        of valid actions to perform on it. """
-
-        del self.actions[action_name]
-
-    def has_action(self, action_name) -> bool:
-        """ Returns whether or not this object has an action
-        with the given name. (True/False) """
-
-        return action_name in self.actions.keys()
 
 
 class Living(StdObject):
