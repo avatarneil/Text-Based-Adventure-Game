@@ -41,7 +41,7 @@ def test_suite():
         tbag.Lang.A("banana"), tbag.Lang.A("apple")
     ))
 
-    print(tbag.Lang.prettify("these violent delights have violent ends. it doesnt look like anything to me"))
+    tbag.Console.prettyprint("these violent delights have violent ends. it doesnt look like anything to me")
 
 
     testLiving.location = 'forest'

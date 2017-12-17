@@ -84,6 +84,24 @@ class Lang():
 
         return ' '.join(split)
 
+class Console():
+    """ Console handles player input and printing
+    messages to the player. """
+    
+    @classmethod
+    def tell(cls, msg):
+        sys.stdout.write("{0}\n".format(msg))
+    
+    @classmethod
+    def prettyprint(cls, msg):
+        sys.stdout.write("{0}\n".format(Lang.prettify(msg)))
+    
+    @classmethod
+    def input(cls):
+        cmd = sys.stdin.read()
+        cmd_parsed = Lang.parse_input(cmd)
+        world.execute(cmd_parsed)
+
 
 class StdObject():
     """ Base object from which all other objects derive from.
@@ -96,7 +114,6 @@ class StdObject():
         self.description = ""
 
         world.add(self)
-            
 
     def __str__(self):
         return "a StdObject called '{0}'".format(self.name)
@@ -115,6 +132,10 @@ class StdObject():
             self.aliases.append(new_alias)
         else:
             raise(TypeError("New alias must be list or string."))
+    
+    def do_action(action, doer, target):
+        # TODO: handle actions
+        pass
 
 
 class Living(StdObject):
@@ -144,6 +165,9 @@ class Living(StdObject):
         the specified item (True/False). """
 
         return self.inventory.has_item(item)
+    
+    def say(self, msg):
+        Console.tell("{0} says, \"{1}\"".format(self.name, msg))
 
 
 class Player(Living):
@@ -227,7 +251,7 @@ class Container(Item):
 
 class World():
     """ Everything in the game is connected to
-    everything else via the World. """
+    everything else via the World space. """
 
     def __init__(self):
         self.tickspeed = 1000 # game heartbeat in ms
@@ -249,5 +273,9 @@ class World():
         # Neil, I apologize in advance for this line ^^^
 
         return keywords
+
+    def execute(self, cmd):
+        # TODO: extrapolate and execute commands
+        pass
 
 world = World()

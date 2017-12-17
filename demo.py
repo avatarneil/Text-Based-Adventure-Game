@@ -15,3 +15,6 @@ hipster.give_item(money)
 cia.give_item(letter)
 
 coffee = tbag.Item("decaf chai latte", "starbucks")
+
+while True:
+    tbag.Console.input()
