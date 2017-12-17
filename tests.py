@@ -1,25 +1,27 @@
 import tbag
 
 def test_suite():
-    testStdObject = tbag.StdObject("test standard object",
-                                   "a generic, standard object with no special properties",
-                                   "a generic object")
-    testLiving = tbag.Living("test living",
-                             "a living, breathing being",
-                             "a living thing")
-    testPlayer = tbag.Player("test player",
-                             "the star of the show",
-                             "you", "m", "human")
-    testItem = tbag.Item("test item",
-                         "a generic item used for testing purposes",
-                         "an item")
-    testContainer = tbag.Container("test container",
-                                   "a container for holding items",
-                                   "a container")
+    world = tbag.World()
+
+    testStdObject = tbag.StdObject("test standard object", "limbo")
+    testStdObject.set_desc("a generic standard object with no special properties")
+
+    testLiving = tbag.Living("test living", "limbo")
+    testLiving.set_desc("a generic test Living with no purpose in life")
+
+    testPlayer = tbag.Player("test player", "limbo")
+    testPlayer.set_desc("the star of the (test) show")
+
+    testItem = tbag.Item("test item", "limbo")
+    testItem.set_desc("a generic item used for testing purposes")
+
+    testContainer = tbag.Container("test container", "limbo", world)
+    testContainer.set_desc("a test container for holding test items")
 
     print("{0}\n{1}\n{2}\n{3}\n{4}\n".format(
         testStdObject, testLiving, testPlayer, testItem, testContainer
     ))
+
 
     testPlayer.inventory.show_contents()
     print("TestPlayer has TestItem: {0}\n".format(testPlayer.has_item(testItem)))
@@ -29,6 +31,7 @@ def test_suite():
     testPlayer.inventory.show_contents()
     print("TestPlayer has TestItem: {0}\n".format(testPlayer.has_item(testItem)))
 
+
     print(tbag.Lang.gender(testPlayer))
     print(tbag.Lang.pronoun(testPlayer))
 
@@ -37,9 +40,22 @@ def test_suite():
         tbag.Lang.A("banana"), tbag.Lang.A("apple")
     ))
 
-    print(tbag.Lang.prettify("these violent delights have violent ends. it doesnt look like anything to me"))
+    tbag.Console.prettyprint("these violent delights have violent ends. it doesnt look like anything to me")
 
-    while True:
-        print(tbag.Lang.prettify(input()))
+
+    testLiving.location = 'forest'
+    world.add(testLiving)
+
+    flower = tbag.Item("flower", "forest")
+    flower.set_desc("a delicate looking rose growing from the base of a tree stump")
+    flower.add_alias('rose')
+
+    sword = tbag.Item("sword", "forest")
+    sword.set_desc("a double-edged broadsword lodged halfway in the tree stump")
+
+    print(tbag.world.get_keywords('forest'))
+    print(tbag.world.get_keywords("limbo"))
+
+    print(tbag.world.player)
 
 test_suite()

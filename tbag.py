@@ -5,6 +5,7 @@ player-driven text-based experiences.
 """
 
 import sys
+import itertools
 
 #pylint: disable=too-many-arguments
 #pylint: disable=too-few-public-methods
@@ -44,19 +45,6 @@ class Lang():
         return {'m': 'he', 'f': 'she', 'x': 'they', 'n': 'it'}[living.gender]
 
     @classmethod
-    def inputParser(cls, inputData):
-        """ Takes inputs and parses into a more convenient datatype """
-
-        if type(inputData) is str:  # if inputData is a string case
-            firstWord = inputData.partition(' ')[0]
-        else:
-            try:
-                inputData = str(inputData)
-                firstWord = inputData.partition(' ')[0]
-            except AttributeError:
-                return "inputData is not parsable as a string"
-
-    @classmethod
     def prettify(cls, phrase) -> str:
         """ Nicely formats and returns a given string. """
 
@@ -82,60 +70,81 @@ class Lang():
 
         return ' '.join(split)
 
+class Console():
+    """ Console handles player input and printing
+    messages to the player. """
+
+    @classmethod
+    def tell(cls, msg):
+        sys.stdout.write("{0}\n\n".format(msg))
+    
+    @classmethod
+    def debug(cls, msg):
+        if len(sys.argv) > 1 and sys.argv[1] in ['-d','-debug']:
+            sys.stdout.write(">{0}\n".format(msg))
+
+    @classmethod
+    def prettyprint(cls, msg):
+        sys.stdout.write("{0}\n".format(Lang.prettify(msg)))
+
+    @classmethod
+    def input(cls):
+        cmd = input()
+        world.parse_input(cmd)
+
 
 class StdObject():
     """ Base object from which all other objects derive from.
     Should never be used directly. """
 
-    def __init__(self, name, longDesc="", shortDesc=""):
+    def __init__(self, name, location="limbo"):
         self.name = name
-        self.longDesc = longDesc
-        self.shortDesc = shortDesc
-        self.actions = {}
+        self.aliases = [self.name]
+        self.actions = []
+        self.location = location
+        self.description = ""
+
+        world.add(self)
 
     def __str__(self):
         return "a StdObject called '{0}'".format(self.name)
 
     def __repr__(self):
-        return "StdObject\nName: {0}\nlongDesc: {1}\nshortDesc: {2}"\
-               "\n".format(self.name, self.longDesc, self.shortDesc)
+        return "StdObject\nName: {0}\Description: {1}\Location: {2}"\
+               "\n".format(self.name, self.description, self.location)
 
-    def attach_action(self, action_name, action):
-        """ Adds an Action to this objects dictionary
-        of valid actions to perform on it. """
+    def set_desc(self, new_desc):
+        self.description = new_desc
 
-        self.actions[action_name] = action
+    def add_alias(self, new_alias):
+        if type(new_alias) == type(['list']):
+            self.aliases += new_alias
+        elif type(new_alias) == type('string'):
+            self.aliases.append(new_alias)
+        else:
+            raise(TypeError("New alias must be list or string."))
 
-    def detach_action(self, action_name):
-        """ Deletes an action from this object's dictionary
-        of valid actions to perform on it. """
-
-        del self.actions[action_name]
-
-    def has_action(self, action_name) -> bool:
-        """ Returns whether or not this object has an action
-        with the given name. (True/False) """
-
-        return self.actions[action_name]
+    def do_action(self, action, doer, target):
+        # TODO: handle actions
+        pass
 
 
 class Living(StdObject):
     """ Base class from which all living things derive from.
     Should never be used directly. """
 
-    def __init__(self, name, longDesc="", shortDesc="",
-                 gender="x", race="human"):
-        super().__init__(name, longDesc, shortDesc)
-        self.gender = gender
-        self.race = race
+    def __init__(self, name, location="limbo"):
+        super().__init__(name, location)
+        self.gender = "x"
+        self.race = "human"
         self.inventory = Container("{0}'s inventory".format(self.name))
 
     def __str__(self):
         return Lang.a("{0} {1} Living named '{2}'".format(Lang.gender(self), self.race, self.name))
 
     def __repr__(self):
-        return "Living\nName: {0}\nlongDesc: {1}\nshortDesc: {2}\ngender: {3}\nrace: {4}".format(
-            self.name, self.longDesc, self.shortDesc, self.gender, self.race)
+        return "Living\nName: {0}\description: {1}\location: {2}\ngender: {3}\nrace: {4}".format(
+            self.name, self.description, self.location, self.gender, self.race)
 
     def give_item(self, item):
         """ Inserts the given item into this Living's inventory. """
@@ -148,60 +157,53 @@ class Living(StdObject):
 
         return self.inventory.has_item(item)
 
-    def do_action(self, action_name, target):
-        """ Attempts to perform the specified action on the specified target.
-        Returns True if successful, otherwise returns False. """
-
-        if target.has_action(action_name):
-            target.actions[action_name].execute(self, target)
-            return True
-        else:
-            return False
+    def say(self, msg):
+        Console.tell("{0} says, \"{1}\"".format(self.name, msg))
 
 
 class Player(Living):
     """ Controls the Player and handles interaction. """
 
-    def __init__(self, name, longDesc="", shortDesc="",
-                 gender="x", race="human"):
-        super().__init__(name, longDesc, shortDesc, gender, race)
+    def __init__(self, name, location="limbo"):
+        super().__init__(name, location)
+        self.add_alias(["me","myself"])
 
     def __str__(self):
         return Lang.a("{0} {1} Player named '{2}'".format(Lang.gender(self), self.race, self.name))
 
     def __repr__(self):
-        return "Player\nName: {0}\nlongDesc: {1}\nshortDesc: {2}\ngender: {3}\nrace: {4}".format(
-            self.name, self.longDesc, self.shortDesc, self.gender, self.race)
+        return "Player\nName: {0}\description: {1}\location: {2}\ngender: {3}\nrace: {4}".format(
+            self.name, self.description, self.location, self.gender, self.race)
 
 
 class Item(StdObject):
     """ Generic base class for interactible items. """
 
-    def __init__(self, name, longDesc="", shortDesc="", value=0):
-        super().__init__(name, longDesc, shortDesc)
-        value = value
+    def __init__(self, name, location="limbo", value=0):
+        super().__init__(name, location)
+        self.value = value
 
     def __str__(self):
         return "an Item called '{0}'".format(self.name)
 
     def __repr__(self):
-        return "Item\nName: {0}\nlongDesc: {1}\nshortDesc: {2}"\
-            "\n".format(self.name, self.longDesc, self.shortDesc)
+        return "Item\nName: {0}\description: {1}\location: {2}"\
+            "\n".format(self.name, self.description, self.location)
 
 
 class Container(Item):
     """ Game object that is used to store other objects. """
 
-    def __init__(self, name, longDesc="", shortDesc=""):
-        super().__init__(name, longDesc, shortDesc)
+    def __init__(self, name, location="limbo"):
+        super().__init__(name, location)
         self.contents = []
 
     def __str__(self):
         return "a Container called '{0}'".format(self.name)
 
     def __repr__(self):
-        return "Container\nName: {0}\nlongDesc: {1}\nshortDesc: {2}"\
-               "\n".format(self.name, self.longDesc, self.shortDesc)
+        return "Container\nName: {0}\description: {1}\location: {2}"\
+               "\n".format(self.name, self.description, self.location)
 
     def show_contents(self):
         """ Prints the name of the container followed by
@@ -227,7 +229,7 @@ class Container(Item):
         return item in self.contents
 
     def transfer_to(self, other, item) -> bool:
-        """ Transfers an item from this Container's inventory to another's. 
+        """ Transfers an item from this Container's inventory to another's.
         Returns True if successful, False if not. """
 
         if not self.has_item(item):
@@ -239,54 +241,69 @@ class Container(Item):
         except ValueError:
             return False
 
+class World():
+    """ Everything in the game is connected to
+    everything else via the World space. """
 
-class Location(StdObject):
-    """ Handles the contents of a certain game location. """
+    def __init__(self):
+        self.tickspeed = 1000 # game heartbeat in ms
+        self.population = {}
+        self.locations = {}
+        self.player = None
 
-    def __init__(self, name, longDesc, shortDesc):
-        super().__init__(self, name, longDesc, shortDesc)
-        self.inventory = Container(
-            "Contents of Location '{0}'".format(self.name))
+    def add(self, thing):
+        """ Adds an object into the world space. """
 
-    def add_item(self, item):
-        self.inventory.add_item(item)
+        if not type(thing) == type([]):
+            thing = [thing]
+    
+        for i in thing:
+            if type(i) is Player:
+                self.player = i
+            else:
+                self.population[i.name] = i
+    
+    def add_loc(self, loc_name, loc_desc):
+        self.locations[loc_name] = loc_desc
 
-    def get_keywords(self) -> list:
-        # TODO: dynamically create lists of every valid keyword for a Location
-        pass
+    def get_keywords(self, loc):
+        """ Returns a list of all valid keywords for the given location. """
 
-    def get_desc():
-        contents_descs = [Lang.a(x.shortDesc) for x in self.inventory.contents]
-        return Lang.prettify("{0}. there is {1}".format(self.shortDesc, ', '.join(contents_descs)))
+        pop_keys = [x.aliases for x in self.population.values()]
+        action_keys = [x.actions for x in self.population.values()]
 
+        keywords = list(itertools.chain.from_iterable(pop_keys + action_keys))
+        return keywords
 
-class Exit(StdObject):
-    """ Handles moving the Player from one Location to another. """
+    def parse_input(self, input_data):
+        """ Takes inputs and parses into a more convenient datatype """
 
-    def __init__(self, name, longDesc, shortDesc):
-        super().__init__(self, name, longDesc, shortDesc)
-        self.destination = None
+        if type(input_data) is not str:
+            try:
+                input_data = str(input_data)
+            except AttributeError:
+                return "input_data is not parsable as a string"
 
+        keywords = self.get_keywords(self.player.location)
+        input_words = input_data.split(' ')
+        valid_words = [w for w in input_words if w in keywords]
 
-class Action():  # lawsuit
-    """ Actions are attached to StdObjects using StdObject.attach_action().
-    Once an action has been atatched to a StdObject, any living can perform
-    that action using Living.do_action() """
-    # TODO: StdObject.attach_action()
-    # TODO: Living.do_action()
+        if not valid_words:
+            Console.tell("That's not possible.")
+        elif len(valid_words) == 1:
+            self.execute(self.player, valid_words[0])
+        elif len(valid_words) > 1:
+            self.execute(self.player, valid_words[0], valid_words[1])
 
-    def __init__(self, name, base, tell=None, synonyms=None):
-        self.base = base  # eg. write, open, go
-        self.name = name
-        if not tell:  # eg. writes, opens, goes
-            self.tell = base + 's'
-        else:
-            self.tell = tell
-        if not synonyms:
-            self.synonyms = []
-        else:
-            self.synonyms = synonyms
+    def execute(self, doer, action, target=None):
+        Console.debug("doer: {0} | action: {1} | target: {2}".format(
+            doer.name, action, target))
+            
+        for i in self.population.values():
+            if target in i.aliases:
+                i.do_action(action, doer)
+                return
 
-    def execute(self, doer, target) -> bool:
-        return("Default action '{0}' performed by '{1}' on '{2}'.".format(
-               self.name, doer, target))
+        Console.tell("You can't do that.")
+
+world = World()
