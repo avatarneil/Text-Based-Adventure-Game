@@ -5,7 +5,6 @@ player-driven text-based experiences.
 """
 
 import sys
-import numpy
 import itertools
 
 #pylint: disable=too-many-arguments
@@ -74,15 +73,15 @@ class Lang():
 class Console():
     """ Console handles player input and printing
     messages to the player. """
-    
+
     @classmethod
     def tell(cls, msg):
         sys.stdout.write("{0}\n".format(msg))
-    
+
     @classmethod
     def prettyprint(cls, msg):
         sys.stdout.write("{0}\n".format(Lang.prettify(msg)))
-    
+
     @classmethod
     def input(cls):
         cmd = input()
@@ -108,10 +107,10 @@ class StdObject():
     def __repr__(self):
         return "StdObject\nName: {0}\Description: {1}\Location: {2}"\
                "\n".format(self.name, self.description, self.location)
-    
+
     def set_desc(self, new_desc):
         self.description = new_desc
-    
+
     def add_alias(self, new_alias):
         if type(new_alias) == type(['list']):
             self.aliases += new_alias
@@ -119,8 +118,8 @@ class StdObject():
             self.aliases.append(new_alias)
         else:
             raise(TypeError("New alias must be list or string."))
-    
-    def do_action(action, doer, target):
+
+    def do_action(self, action, doer, target):
         # TODO: handle actions
         pass
 
@@ -129,7 +128,7 @@ class Living(StdObject):
     """ Base class from which all living things derive from.
     Should never be used directly. """
 
-    def __init__(self, name, location="limbo", world="n/a"):
+    def __init__(self, name, location="limbo"):
         super().__init__(name, location)
         self.gender = "x"
         self.race = "human"
@@ -152,7 +151,7 @@ class Living(StdObject):
         the specified item (True/False). """
 
         return self.inventory.has_item(item)
-    
+
     def say(self, msg):
         Console.tell("{0} says, \"{1}\"".format(self.name, msg))
 
@@ -160,7 +159,7 @@ class Living(StdObject):
 class Player(Living):
     """ Controls the Player and handles interaction. """
 
-    def __init__(self, name, location="limbo", world="n/a"):
+    def __init__(self, name, location="limbo"):
         super().__init__(name, location)
         self.add_alias(["me","myself"])
 
@@ -175,7 +174,7 @@ class Player(Living):
 class Item(StdObject):
     """ Generic base class for interactible items. """
 
-    def __init__(self, name, location="limbo", world="n/a", value=0):
+    def __init__(self, name, location="limbo", value=0):
         super().__init__(name, location)
         self.value = value
 
@@ -190,7 +189,7 @@ class Item(StdObject):
 class Container(Item):
     """ Game object that is used to store other objects. """
 
-    def __init__(self, name, location="limbo", world="n/a"):
+    def __init__(self, name, location="limbo"):
         super().__init__(name, location)
         self.contents = []
 
@@ -225,7 +224,7 @@ class Container(Item):
         return item in self.contents
 
     def transfer_to(self, other, item) -> bool:
-        """ Transfers an item from this Container's inventory to another's. 
+        """ Transfers an item from this Container's inventory to another's.
         Returns True if successful, False if not. """
 
         if not self.has_item(item):
@@ -245,19 +244,19 @@ class World():
         self.tickspeed = 1000 # game heartbeat in ms
         self.population = {}
         self.player = None
-    
+
     def add(self, thing):
         """ Adds an object into the world space. """
 
         if not type(thing) == type([]):
             thing = [thing]
-        
+    
         for i in thing:
             if type(i) is Player:
                 self.player = i
             else:
                 self.population[i.name] = i
-    
+
     def get_keywords(self, loc):
         """ Returns a list of all valid keywords for the given location. """
 
@@ -269,9 +268,7 @@ class World():
     def parse_input(self, input_data):
         """ Takes inputs and parses into a more convenient datatype """
 
-        if type(input_data) is str:  # if input_data is a string case
-            first_word = input_data.partition(' ')[0]
-        else:
+        if type(input_data) is not str:
             try:
                 input_data = str(input_data)
             except AttributeError:
