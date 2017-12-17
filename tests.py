@@ -53,8 +53,11 @@ def test_suite():
     flower = tbag.Item("flower", "forest")
     flower.set_desc("a delicate looking rose growing from the base of a tree stump")
     flower.add_alias('rose')
-    
-    world.add(flower)
+
+    sword = tbag.Item("sword", "forest")
+    sword.set_desc("a double-edged broadsword lodged halfway in the tree stump")
+
+    world.add([flower, sword])
 
     print(world.get_keywords('forest'))
 

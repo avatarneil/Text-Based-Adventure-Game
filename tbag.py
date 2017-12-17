@@ -228,21 +228,21 @@ class World():
 
     def __init__(self):
         self.tickspeed = 1000 # game heartbeat in ms
-        self.livings = {}
-        self.things = {}
+        self.population = {}
     
     def add(self, thing):
         """ Adds an object into the world space. """
 
-        if type(thing) == Living:
-            self.livings[thing.name] = thing
+        if type(thing) == type([]):
+            for i in thing:
+                self.population[i.name] = i
         else:
-            self.things[thing.name] = thing
+            self.population[thing.name] = thing
     
     def get_keywords(self, loc):
         """ Returns a list of all valid keywords for the given location. """
 
-        keywords = list(itertools.chain.from_iterable([x.aliases for x in itertools.chain(self.livings.values(), self.things.values()) if x.location == loc]))
+        keywords = list(itertools.chain.from_iterable([x.aliases for x in self.population.values() if x.location == loc]))
         # Neil, I apologize in advance for this line ^^^
 
         return keywords
