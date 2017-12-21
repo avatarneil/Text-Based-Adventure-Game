@@ -71,28 +71,43 @@ class Lang():
         return ' '.join(split)
 
 class Console():
-    """ Console handles player input and printing
-    messages to the player. """
+    """ Console handles player input and printing messages
+    to the player. """
 
     @classmethod
     def tell(cls, msg):
+        """ Prints a message to the player, followed by
+        a blank line. """
+
         sys.stdout.write("{0}\n\n".format(msg))
 
     @classmethod
     def say(cls, name, msg):
+        """ Tells the player that an actor with the given
+        name said the given message. """
+
         sys.stdout.write("{0} says, \"{1}\"\n".format(name, msg))
     
     @classmethod
     def debug(cls, msg):
+        """ Prints a debug message only if the script was
+        run with the debug parameter. """
+
         if len(sys.argv) > 1 and sys.argv[1] in ['-d','-debug']:
             sys.stdout.write(">{0}\n".format(msg))
 
     @classmethod
     def prettyprint(cls, msg):
+        """ Prints a message after running it through the
+        Lang.prettify() method. """
+
         sys.stdout.write("{0}\n".format(Lang.prettify(msg)))
 
     @classmethod
     def input(cls):
+        """ Gets a command from the player and passes it to
+        the input parser. """
+
         cmd = input()
         world.parse_input(cmd)
 
@@ -118,9 +133,13 @@ class StdObject():
                "\n".format(self.name, self.description, self.location)
 
     def set_desc(self, new_desc):
+        """ Sets a new description for the object. """
         self.description = new_desc
 
     def add_alias(self, new_alias):
+        """ Add an alias or aliases depending on if passed
+        a string or a list. """
+
         if type(new_alias) == type(['list']):
             self.aliases += new_alias
         elif type(new_alias) == type('string'):
@@ -129,17 +148,22 @@ class StdObject():
             raise(TypeError("New alias must be list or string."))
     
     def has_action(self, action) -> bool:
+        """ Returns whether or not the specified action can
+        be performed on this object (True/False). """
+
         if action in list(itertools.chain.from_iterable(self.actions.values())):
             return True
         return False
 
     def execute(self, action, doer):
+        """ Executes an action performed by the given
+        living. """
+
         Console.debug("Executing action: {0} | target: {1} | doer: {2}".format(action, self.name, doer))
 
 
 class Living(StdObject):
-    """ Base class from which all living things derive from.
-    Should never be used directly. """
+    """ Base class from which all living things derive from. """
 
     def __init__(self, name, location="limbo"):
         super().__init__(name, location)
@@ -155,20 +179,26 @@ class Living(StdObject):
             self.name, self.description, self.location, self.gender, self.race)
 
     def give_item(self, item):
-        """ Inserts the given item into this Living's inventory. """
+        """ Inserts the given item into this Living's
+        inventory. """
 
         self.inventory.add_item(item)
 
     def has_item(self, item) -> bool:
-        """ Returns whether or not this Living currently has
-        the specified item (True/False). """
+        """ Returns whether or not this Living currently
+        has the specified item (True/False). """
 
         return self.inventory.has_item(item)
 
     def say(self, msg):
+        """ Tells the player that this living said the
+        given message. """
+
         Console.say(self.name, msg)
     
     def do_action(self, action, target):
+        """ Executes the given action on the given target,
+        if possible, otherwise prints an error message. """
         if not self.location == target.location:
             Console.tell("You don't see a {0} here.".format(target.name))
             return False
@@ -180,7 +210,7 @@ class Living(StdObject):
 
 
 class Player(Living):
-    """ Controls the Player and handles interaction. """
+    """ Stores data relevant to the Player. """
 
     def __init__(self, name, location="limbo"):
         super().__init__(name, location)
@@ -212,9 +242,13 @@ class Item(StdObject):
             "\n".format(self.name, self.description, self.location)
     
     def execute(self, action, doer):
+        """ Executes the given action performed by the
+        given living. """
+
         super().execute(action, doer)
         if action == "pickup":
             doer.give_item(self)
+            world.remove(self)
             self.location = "{0}'s inventory".format(doer.name)
             return True
 
@@ -246,19 +280,21 @@ class Container(Item):
             print(Lang.prettify(item))
 
     def add_item(self, item):
-        """ Inserts the given item into the Container's inventory """
+        """ Inserts the given item into the Container's
+        inventory. """
 
         self.contents.append(item)
 
     def has_item(self, item) -> bool:
         """ Returns whether or not the Container currently contains
-        the specified item. """
+        the specified item (True/False). """
 
         return item in self.contents
 
     def transfer_to(self, other, item) -> bool:
-        """ Transfers an item from this Container's inventory to another's.
-        Returns True if successful, False if not. """
+        """ Transfers an item from this Container's
+        inventory to another's. Returns True if successful,
+        otherwise returns False. """
 
         if not self.has_item(item):
             return False
@@ -279,7 +315,7 @@ class World():
         self.locations = {}
         self.player = None
 
-    def add(self, thing):
+    def add(self, thing,):
         """ Adds an object into the world space. """
 
         if not type(thing) == type([]):
@@ -292,10 +328,12 @@ class World():
                 self.population[i.name] = i
     
     def add_loc(self, loc_name, loc_desc):
+        """ Adds a description for the given location. """
         self.locations[loc_name] = loc_desc
 
     def get_keywords(self, loc):
-        """ Returns a list of all valid keywords for the given location. """
+        """ Returns a list of all valid keywords for the
+        given location. """
 
         keywords = []
         for i in self.population.values():
@@ -306,7 +344,7 @@ class World():
         return keywords
 
     def parse_input(self, input_data):
-        """ Takes inputs and parses into a more convenient datatype """
+        """ Takes inputs and attempts to execute a command. """
 
         if type(input_data) is not str:
             try:
@@ -326,6 +364,8 @@ class World():
             self.execute(valid_words[0], valid_words[1])
 
     def execute(self, action, target=None):
+        """ Executes commands performed by the player.
+        Fails if not provided a valid target. """
             
         for i in self.population.values():
             if target in i.aliases:
