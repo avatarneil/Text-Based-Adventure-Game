@@ -15,7 +15,7 @@ def test_suite():
     testItem = tbag.Item("test item", "limbo")
     testItem.set_desc("a generic item used for testing purposes")
 
-    testContainer = tbag.Container("test container", "limbo", world)
+    testContainer = tbag.Container("test container", "limbo")
     testContainer.set_desc("a test container for holding test items")
 
     print("{0}\n{1}\n{2}\n{3}\n{4}\n".format(
@@ -40,11 +40,7 @@ def test_suite():
         tbag.Lang.A("banana"), tbag.Lang.A("apple")
     ))
 
-    tbag.Console.prettyprint("these violent delights have violent ends. it doesnt look like anything to me")
-
-
-    testLiving.location = 'forest'
-    world.add(testLiving)
+    tbag.Console.prettyprint("these violent delights have violent ends. it doesnt look like anything to me\n")
 
     flower = tbag.Item("flower", "forest")
     flower.set_desc("a delicate looking rose growing from the base of a tree stump")

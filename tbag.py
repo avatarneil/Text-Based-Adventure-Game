@@ -108,7 +108,7 @@ class Console():
         """ Gets a command from the player and passes it to
         the input parser. """
 
-        cmd = input()
+        cmd = input('\n')
         world.parse_input(cmd)
 
 
@@ -116,20 +116,24 @@ class StdObject():
     """ Base object from which all other objects derive from.
     Should never be used directly. """
 
-    def __init__(self, name, location="limbo"):
+    def __init__(self, name="no_name", location="limbo"):
         self.name = name
         self.aliases = [self.name]
-        self.actions = {}
+        self.description = None
         self.location = location
+        self.actions = {}
+        self.base_actions = {
+            "examine": ["examine", "look", "analyze"]
+        }
         self.description = ""
 
-        world.add(self)
+        world.add(self, location)
 
     def __str__(self):
         return "a StdObject called '{0}'".format(self.name)
 
     def __repr__(self):
-        return "StdObject\nName: {0}\Description: {1}\Location: {2}"\
+        return "StdObject\nName: {0}\nDescription: {1}\nLocation: {2}"\
                "\n".format(self.name, self.description, self.location)
 
     def set_desc(self, new_desc):
@@ -147,19 +151,35 @@ class StdObject():
         else:
             raise(TypeError("New alias must be list or string."))
     
-    def has_action(self, action) -> bool:
+    def has_action(self, act_name) -> bool:
         """ Returns whether or not the specified action can
         be performed on this object (True/False). """
 
-        if action in list(itertools.chain.from_iterable(self.actions.values())):
+        if act_name in list(itertools.chain.from_iterable(self.actions.values())):
+            return True
+        elif act_name in list(itertools.chain.from_iterable(self.base_actions.values())):
             return True
         return False
+    
+    def id_action(self, act_name):
+        all_actions = {**self.base_actions, **self.actions}
 
-    def execute(self, action, doer):
+        for action, aliases in all_actions.items():
+            for name in aliases:
+                if name == act_name:
+                    return action
+
+    def execute(self, act_name, doer):
         """ Executes an action performed by the given
         living. """
 
-        Console.debug("Executing action: {0} | target: {1} | doer: {2}".format(action, self.name, doer))
+        Console.debug("Executing action: {0} | target: {1} | doer: {2}".format(act_name, self.name, doer))
+
+        if self.id_action(act_name) == "examine":
+            if not self.description:
+                Console.tell("The {0} doesn't have a description.".format(self.name))
+            else:
+                Console.prettyprint(self.description)
 
 
 class Living(StdObject):
@@ -175,8 +195,8 @@ class Living(StdObject):
         return Lang.a("{0} {1} Living named '{2}'".format(Lang.gender(self), self.race, self.name))
 
     def __repr__(self):
-        return "Living\nName: {0}\description: {1}\location: {2}\ngender: {3}\nrace: {4}".format(
-            self.name, self.description, self.location, self.gender, self.race)
+        return "Living\nName: {0}\ndescription: {1}\ngender: {2}\nrace: {4}".format(
+            self.name, self.description, self.gender, self.race)
 
     def give_item(self, item):
         """ Inserts the given item into this Living's
@@ -196,11 +216,13 @@ class Living(StdObject):
 
         Console.say(self.name, msg)
     
-    def do_action(self, action, target):
+    def do_action(self, action, target=None):
         """ Executes the given action on the given target,
         if possible, otherwise prints an error message. """
-        if not self.location == target.location:
-            Console.tell("You don't see a {0} here.".format(target.name))
+        if not target:
+            Console.tell("That doesn't make any sense.")
+        elif not self.location == target.location:
+            Console.tell("You don't see a {0} anywhere.".format(target.name))
             return False
         elif not target.has_action(action):
             Console.tell("You can't {0} the {1}.".format(action, target.name))
@@ -220,8 +242,8 @@ class Player(Living):
         return Lang.a("{0} {1} Player named '{2}'".format(Lang.gender(self), self.race, self.name))
 
     def __repr__(self):
-        return "Player\nName: {0}\description: {1}\location: {2}\ngender: {3}\nrace: {4}".format(
-            self.name, self.description, self.location, self.gender, self.race)
+        return "Player\nName: {0}\description: {1}\ngender: {2}\nrace: {3}".format(
+            self.name, self.description, self.gender, self.race)
 
 
 class Item(StdObject):
@@ -238,8 +260,8 @@ class Item(StdObject):
         return "an Item called '{0}'".format(self.name)
 
     def __repr__(self):
-        return "Item\nName: {0}\description: {1}\location: {2}"\
-            "\n".format(self.name, self.description, self.location)
+        return "Item\nName: {0}\description: {1}"\
+            "\n".format(self.name, self.description)
     
     def execute(self, action, doer):
         """ Executes the given action performed by the
@@ -249,7 +271,6 @@ class Item(StdObject):
         if action == "pickup":
             doer.give_item(self)
             world.remove(self)
-            self.location = "{0}'s inventory".format(doer.name)
             return True
 
 
@@ -264,20 +285,20 @@ class Container(Item):
         return "a Container called '{0}'".format(self.name)
 
     def __repr__(self):
-        return "Container\nName: {0}\description: {1}\location: {2}"\
-               "\n".format(self.name, self.description, self.location)
+        return "Container\nName: {0}\description: {1}"\
+               "\n".format(self.name, self.description)
 
     def show_contents(self):
         """ Prints the name of the container followed by
         its contents, each in a new line. """
 
         if not self.contents:
-            print(Lang.prettify("{0} is empty.".format(self.name)))
+            Console.tell(Lang.prettify("{0} is empty.".format(self.name)))
             return
 
-        print("Contents of {0}:".format(self.name))
+        Console.tell("Contents of {0}:".format(self.name))
         for item in self.contents:
-            print(Lang.prettify(item))
+            Console.prettyprint(item)
 
     def add_item(self, item):
         """ Inserts the given item into the Container's
@@ -311,36 +332,62 @@ class World():
 
     def __init__(self):
         self.tickspeed = 1000 # game heartbeat in ms
-        self.population = {}
         self.locations = {}
         self.player = None
 
-    def add(self, thing,):
-        """ Adds an object into the world space. """
+    def add(self, objs, loc):
+        """ Adds an object into the world space at the
+        given location. """
 
-        if not type(thing) == type([]):
-            thing = [thing]
+        if not loc in self.locations.keys():
+            self.locations[loc] = []
+        
+        if not type(objs) is type([]):
+            objs = [objs]
     
-        for i in thing:
-            if type(i) is Player:
-                self.player = i
+        for obj in objs:
+            if type(obj) is Player:
+                self.player = obj
             else:
-                self.population[i.name] = i
+                world.locations[loc].append(obj)
+        
+        Console.debug("Added {0} objects to {1}".format(
+            len(objs), loc))
     
-    def add_loc(self, loc_name, loc_desc):
-        """ Adds a description for the given location. """
-        self.locations[loc_name] = loc_desc
+    def remove(self, obj, loc):
+            self.locations[loc].remove(obj)
+    
+    def move(self, obj, new_loc):
+        """ Pops an obj from its old location into the new
+        location. """
 
-    def get_keywords(self, loc):
+        if not new_loc in self.locations.keys():
+            self.add_loc(new_loc)
+        
+        self.locations[new_loc].append(self.locations[obj.location].pop(obj))
+
+        obj.location = new_loc
+    
+    def add_loc(self, loc_name, loc_desc="no description given"):
+        """ Adds the given location to the world. """
+        self.locations[loc_name] = []
+
+    def get_keywords(self, loc, type="both"):
         """ Returns a list of all valid keywords for the
         given location. """
 
         keywords = []
-        for i in self.population.values():
-            keywords += i.aliases
-            for a in i.actions.values():
-                keywords += a
+        for obj in self.locations[loc]:
+            if not type == "actions":
+                keywords += obj.aliases
+            for act in obj.actions.values():
+                if not type == "things":
+                    keywords += act
+            for act in self.player.base_actions.values():
+                if not type == "things":
+                    keywords += act
         
+        #Console.debug("Keywords for {0}: {1}".format(loc, keywords))
         return keywords
 
     def parse_input(self, input_data):
@@ -356,22 +403,53 @@ class World():
         input_words = input_data.split(' ')
         valid_words = [w for w in input_words if w in keywords]
 
+        Console.debug("valid_words: {0}".format(valid_words))
+
         if not valid_words:
             Console.tell("That's not possible.")
         elif len(valid_words) == 1:
-            self.player.do_action(valid_words[0])
+            self.player.do_action(self.match(valid_words[0]))
         elif len(valid_words) > 1:
-            self.execute(valid_words[0], valid_words[1])
+            self.player.do_action(self.match(valid_words[0]), self.match(valid_words[1]))
 
-    def execute(self, action, target=None):
-        """ Executes commands performed by the player.
-        Fails if not provided a valid target. """
-            
-        for i in self.population.values():
-            if target in i.aliases:
-                self.player.do_action(action, i)
-                return
+    '''def get_matches(self, wds, loc):
+        
+        keywds = self.get_keywords(loc)
+        if not type(wds) is type([]):
+            wds = wds.split()
 
-        Console.tell("You can't do that.")
+        results = {}
+
+        for i, wd in enumerate(wds):
+            match = ""
+            if wd in keywds:
+                for obj in self.locations[loc]:
+                    if wd in obj.aliases:
+                        match = obj
+                if not match:
+                    match = wd
+            results[i] = match
+        
+        Console.debug("Best match result: {0}".format(results))
+        return results'''
+    
+    def match(self, wd):
+        Console.debug("Finding match for: {0}".format(wd))
+        loc = self.player.location
+        
+        things = self.get_keywords(loc, 'things')
+        actions = self.get_keywords(loc, 'actions')
+
+        if wd in things:
+            for obj in self.locations[loc]:
+                if wd in obj.aliases:
+                    Console.debug("Obj match found: {0}".format(obj))
+                    return obj
+        elif wd in actions:
+            Console.debug("Action match found: {0}".format(wd))
+            return wd
+        else:
+            Console.debug("No match found for {0}".format(wd))
+            return 'not_found'
 
 world = World()
